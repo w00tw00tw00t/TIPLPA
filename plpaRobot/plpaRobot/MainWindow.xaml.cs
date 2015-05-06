@@ -1,36 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.Win32;
+using plpaRobot.Enumerables;
 
 namespace plpaRobot
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
+        private readonly Robot _robot;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            _robot = new Robot();
         }
 
         private void RunProgramClicked(object sender, RoutedEventArgs e)
         {
-            var content = ProgramEditor.Text;
+            //var content = ProgramEditor.Text;
 
-            MessageBox.Show(content);
+            //MessageBox.Show(content);
+            //_robot.SetRobot(1, 5);
+            _robot.MoveRobotAbsolute(ProgramEditor.Text);
         }
 
         private void Menu_Open(object sender, RoutedEventArgs e)
@@ -55,10 +52,10 @@ namespace plpaRobot
 
         private void CreateFloorPlan(int[,] data)
         {
-            var child = this.FindName("FloorPlan");
+            var child = FindName("FloorPlan");
             if (child != null)
             {
-                this.RemoveLogicalChild(child);
+                RemoveLogicalChild(child);
             }
 
             var newFloorPlan = new Grid
@@ -80,32 +77,29 @@ namespace plpaRobot
             {
                 for (int l = 0; l < data.GetLength(1); l++)
                 {
-                    var txt = new TextBlock
-                    {
-                        Text = " "
-                    };
+                    var canvas = new Canvas();
 
-                    switch (data[i, l])
+                    switch ((FloorTypeEnum)data[i, l])
                     {
-                        case 1:
-                            txt.Background = Brushes.Green;
+                        case FloorTypeEnum.Path:
+                            canvas.Background = Brushes.Green;
                             break;
-                        case 2:
-                            txt.Background = Brushes.Red;
+                        case FloorTypeEnum.Parking:
+                            canvas.Background = Brushes.Red;
                             break;
-                        case 3:
-                            txt.Background = Brushes.Yellow;
+                        case FloorTypeEnum.Workstation:
+                            canvas.Background = Brushes.Yellow;
                             break;
                     }
 
-                    Grid.SetRow(txt, i);
-                    Grid.SetColumn(txt, l);
+                    Grid.SetRow(canvas, i);
+                    Grid.SetColumn(canvas, l);
 
                     var border = new Border
                     {
                         BorderThickness = new Thickness(1),
                         BorderBrush = Brushes.Black,
-                        Child = txt
+                        Child = canvas
                     };
 
                     Grid.SetRow(border, i);
@@ -115,15 +109,15 @@ namespace plpaRobot
                 }
             }
 
+            _robot.Grid = newFloorPlan;
             Grid.SetColumn(newFloorPlan, 0);
-            //ContentGrid.Children.Add(border);
             ContentGrid.Children.Add(newFloorPlan);
         }
 
         // Test Data!!!!!!
         private int[,] GetDummyData()
         {
-            return new int[,]
+            return new [,]
             {
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 { 0, 0, 3, 3, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
