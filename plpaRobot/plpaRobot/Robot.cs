@@ -28,9 +28,14 @@ namespace plpaRobot
             var ellipse = new Ellipse
             {
                 Fill = Brushes.Black,
-                Width = 20,
-                Height = 20,
-                Stretch = Stretch.Fill
+                Width = canvas.ActualWidth,
+                Height = canvas.ActualHeight
+            };
+
+            Grid.SizeChanged += (sender, args) =>
+            {
+                ellipse.Width = canvas.ActualWidth;
+                ellipse.Height = canvas.ActualHeight;
             };
 
             canvas.Children.Add(ellipse);
