@@ -19,6 +19,10 @@ namespace plpaRobot
             InitializeComponent();
 
             _robot = new Robot();
+
+            var data = GetDummyData();// Do somthing to convert scheme from filepath to int[,]
+            CreateFloorPlan(data);
+            _robot.SetRobot(5,1);
         }
 
         private void RunProgramClicked(object sender, RoutedEventArgs e)
@@ -27,7 +31,24 @@ namespace plpaRobot
 
             //MessageBox.Show(content);
             //_robot.SetRobot(1, 5);
-            _robot.MoveRobotAbsolute(ProgramEditor.Text);
+
+            var message = ProgramEditor.Text;
+
+            switch (message)
+            {
+                case "spawn":
+                    _robot.SetRobot(5, 1);
+                    break;
+                case "up":
+                case "right":
+                case "down":
+                case "left":
+                    _robot.MoveRobotAbsolute(message);
+                    break;
+                default:
+                    _robot.MoveRobotRelative(message);
+                    break;
+            }
         }
 
         private void Menu_Open(object sender, RoutedEventArgs e)
