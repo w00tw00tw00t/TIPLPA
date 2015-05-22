@@ -251,7 +251,8 @@ namespace plpaRobot
 
         private Canvas GetCanvasFromCoordinates(uint row, uint column)
         {
-            return Grid.Children.Cast<Border>().First(e => Grid.GetRow(e) == row && Grid.GetColumn(e) == column).Child as Canvas;
+            return Grid.Children.OfType<Border>().First(e => Grid.GetRow(e) == row && Grid.GetColumn(e) == column).Child as Canvas;
+
         }
 
     }

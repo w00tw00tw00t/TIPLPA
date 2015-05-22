@@ -1,5 +1,3 @@
-#lang scheme
-
 
 (define floorplan '(
 (0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 0 )
@@ -82,8 +80,7 @@
     (if (= (getTileValueXY x y) (getTileValueName 'park))
         (begin
           (setVariable 'x x 0 '())
-          (setVariable 'y y 0 '())
-          (list (getX) (getY)))
+          (setVariable 'y y 0 '()))
         (begin
           (if (= x (- (length (car floorplan)) 1))
               (begin
@@ -218,20 +215,12 @@
    ;check if dropoff matches carriesto and carries is 1
       ;if matches drop of, set carries to 0
       ;else error message
+
 ;)
 
 (define runProgram
   (lambda (programString)
-     (let ((functionList (string-split programString "\n")))
-       (map evalFunctionInString functionList))))
-    
-
-(define evalFunctionInString
-  (lambda expression
-    ;(eval (read (open-input-string (car expression))))
-    expression
-    ))
-     
-
-        
+    (
+     (string-split programString "\n")
+    )))
  

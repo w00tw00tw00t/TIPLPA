@@ -2,8 +2,12 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Linq;
 using Microsoft.Win32;
 using plpaRobot.Enumerables;
+using System.Text.RegularExpressions;
+using IronScheme;
+using IronScheme.Runtime;
 
 namespace plpaRobot
 {
@@ -18,11 +22,15 @@ namespace plpaRobot
         {
             InitializeComponent();
 
-            _robot = new Robot();
+            Schemer.doImports();
+            Schemer.loadSchemeFile("SchemeFiles/robotactions.ss");
 
-            var data = GetDummyData();// Do somthing to convert scheme from filepath to int[,]
-            CreateFloorPlan(data);
-            _robot.SetRobot(5,1);
+            _robot = new Robot();
+            
+            object test = Schemer.Eval("(string-split \"do re mi\" \" \")");
+            //var data = GetDummyData();// Do somthing to convert scheme from filepath to int[,]
+            //CreateFloorPlan(data);
+            //_robot.SetRobot(5,1);
         }
 
         private void RunProgramClicked(object sender, RoutedEventArgs e)
@@ -31,24 +39,10 @@ namespace plpaRobot
 
             //MessageBox.Show(content);
             //_robot.SetRobot(1, 5);
+            string text = "(string-split \"" + ProgramEditor.Text + "\" \n)";
 
-            var message = ProgramEditor.Text;
-
-            switch (message)
-            {
-                case "spawn":
-                    _robot.SetRobot(5, 1);
-                    break;
-                case "up":
-                case "right":
-                case "down":
-                case "left":
-                    _robot.MoveRobotAbsolute(message);
-                    break;
-                default:
-                    _robot.MoveRobotRelative(message);
-                    break;
-            }
+            object a = Schemer.Eval("(eval (read (open-input-string \"(moveRight)\" \"\")))");
+            object test = Schemer.Eval("(runProgram \"" + ProgramEditor.Text + "\")");
         }
 
         private void Menu_Open(object sender, RoutedEventArgs e)
@@ -62,8 +56,15 @@ namespace plpaRobot
             if (openFileDialog.ShowDialog() != true) 
                 return;
 
-            var data = GetDummyData();// Do somthing to convert scheme from filepath to int[,]
-            CreateFloorPlan(data);
+            Schemer.loadSchemeFile(openFileDialog.FileName);
+            string floorplan = (Schemer.Eval("floorplan") as IronScheme.Runtime.Cons).PrettyPrint;
+
+
+            int[,] floorplanvalues = ParseFloorplan(floorplan);
+
+
+
+            CreateFloorPlan(floorplanvalues);
         }
 
         private void Menu_Exit(object sender, RoutedEventArgs e)
@@ -100,6 +101,18 @@ namespace plpaRobot
                 {
                     var canvas = new Canvas();
 
+
+
+                    TextBlock wstext = new TextBlock
+                    {
+                        FontSize = 10,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                        VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                    };
+                    Panel.SetZIndex(wstext, 100);
+                    Grid.SetColumn(wstext, l);
+                    Grid.SetRow(wstext, i);
+
                     switch ((FloorTypeEnum)data[i, l])
                     {
                         case FloorTypeEnum.Path:
@@ -108,8 +121,81 @@ namespace plpaRobot
                         case FloorTypeEnum.Parking:
                             canvas.Background = Brushes.Red;
                             break;
-                        case FloorTypeEnum.Workstation:
+                        case FloorTypeEnum.ws0:
+                            
                             canvas.Background = Brushes.Yellow;
+                            wstext.Text = "0";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws1:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "1";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws2:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "2";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws3:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "3";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws4:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "4";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws0drop:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "0 d";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws0pick:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "0 p";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws1drop:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "1 d";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws1pick:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "1 p";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws2drop:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "2 d";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws2pick:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "2 p";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws3drop:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "3 d";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws3pick:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "3 p";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws4drop:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "4 d";
+                            newFloorPlan.Children.Add(wstext);
+                            break;
+                        case FloorTypeEnum.ws4pick:
+                            canvas.Background = Brushes.Yellow;
+                            wstext.Text = "4 p";
+                            newFloorPlan.Children.Add(wstext);
                             break;
                     }
 
@@ -132,7 +218,37 @@ namespace plpaRobot
 
             _robot.Grid = newFloorPlan;
             Grid.SetColumn(newFloorPlan, 0);
+            
             ContentGrid.Children.Add(newFloorPlan);
+            var coords = ((Cons)Schemer.Eval("(initRobot 0 0)"));
+            var a = coords.cdr.GetType();
+            _robot.SetRobot((uint)((Int32)((Cons)coords.cdr).car),(uint)((Int32)coords.car));
+        }
+
+        private int[,] ParseFloorplan(string floorplanstring)
+        {
+
+
+
+
+            string[] rows = Regex.Matches(floorplanstring, @"\(([^\)]+)\)")
+                .Cast<Match>()
+                .Select(x => x.Value.TrimStart('(').TrimEnd(')'))
+                .ToArray();
+
+            int[,] floorplanvalues = new int[rows.Length, rows[0].Split(' ').Length];
+
+            for(int i = 0; i < rows.Length; i++)
+            {
+                string[] rowsplit = rows[i].Split(' ');
+                for (int j = 0; j < rowsplit.Length; j++)
+                {
+                    floorplanvalues[i, j] = int.Parse(rowsplit[j]);
+                }
+            }
+
+            return floorplanvalues;
+           
         }
 
         // Test Data!!!!!!
@@ -164,5 +280,7 @@ namespace plpaRobot
             };
             
         }
+
+
     }
 }

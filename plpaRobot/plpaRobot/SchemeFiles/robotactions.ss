@@ -1,37 +1,3 @@
-#lang scheme
-
-
-(define floorplan '(
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 3 3 0 )
-(0 0 0 0 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 9 3 0 )
-(0 0 0 0 0 4 10 4 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 4 4 4 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 4 4 11 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 )
-(2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 )
-(2 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 )
-(2 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 )
-(2 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 12 5 5 5 13 1 0 0 1 0 0 )
-(2 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0 0 )
-(2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 )
-(2 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 6 14 1 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 6 6 1 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 6 6 1 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 6 6 1 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 6 6 15 1 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 )
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 7 16 7 0 )
-(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 7 7 7 0 )
-))
-
-
-
-
-
 (define tilestatus '((empty . 0 ) (path . 1) (park . 2) (ws0 . 3) (ws1 . 4) (ws2 . 5) (ws3 . 6) (ws4 . 7)
                      (ws0drop . 8) (ws0pick . 9)(ws1drop . 10) (ws1pick . 11) (ws2drop . 12) (ws2pick . 13)
                      (ws3drop . 14) (ws3pick . 15) (ws4drop . 16) (ws4pick . 17)))
@@ -222,16 +188,30 @@
 
 (define runProgram
   (lambda (programString)
-     (let ((functionList (string-split programString "\n")))
-       (map evalFunctionInString functionList))))
+     (let ((functionList (str-split programString #\newline)))
+       (if (pair? functionList)
+           (map evalFunctionInString functionList)
+           functionList)
+       )))
     
 
 (define evalFunctionInString
   (lambda expression
-    ;(eval (read (open-input-string (car expression))))
-    expression
-    ))
-     
+    (eval (read (open-input-string (car expression))))))
 
-        
+
+(define (str-split str ch)
+  (let ((len (string-length str)))
+    (letrec
+      ((split
+        (lambda (a b)
+          (cond
+            ((>= b len) (if (= a b) '() (cons (substring str a b) '())))
+              ((char=? ch (string-ref str b)) (if (= a b)
+                (split (+ 1 a) (+ 1 b))
+                  (cons (substring str a b) (split b b))))
+                (else (split a (+ 1 b)))))))
+                  (split 0 0))))
+    
+     
  

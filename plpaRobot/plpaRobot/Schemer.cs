@@ -21,7 +21,7 @@ namespace plpaRobot
             File.ReadAllText(filename).Eval();
         }
 
-        public static object  Eval(string scheme, Object[] parameter)
+        public static object Eval(string scheme, Object[] parameter = null)
         {
             if(parameter != null)
             {
@@ -42,5 +42,13 @@ namespace plpaRobot
         {
             "(interaction-environment (new-interaction-environment))".Eval();
         }
+
+        public static void doImports()
+        {
+            Eval("(import (ironscheme strings))");
+            Eval("(import (srfi :6))");
+            
+        }
+
     }
 }

@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IronScheme">
-      <HintPath>..\packages\IronScheme.0.9.113668\lib\IronScheme.dll</HintPath>
+      <HintPath>..\..\..\..\IronScheme\IronScheme\IronScheme.dll</HintPath>
     </Reference>
     <Reference Include="IronScheme.Web.Runtime">
       <HintPath>..\packages\IronScheme.0.9.113668\lib\IronScheme.Web.Runtime.dll</HintPath>
@@ -60,6 +60,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Robot.cs" />
+    <Compile Include="Schemer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -123,7 +124,10 @@
     <None Include="lib\ironscheme\regex-cond.sls" />
     <None Include="lib\ironscheme\regex.sls" />
     <None Include="lib\ironscheme\registry.sls" />
-    <None Include="lib\ironscheme\strings.sls" />
+    <Content Include="lib\ironscheme\strings.sls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CustomToolNamespace>ironscheme</CustomToolNamespace>
+    </Content>
     <None Include="lib\ironscheme\syntax.sls" />
     <None Include="lib\ironscheme\syntax\define-macro.sls" />
     <None Include="lib\ironscheme\syntax\library-utils.sls" />
@@ -349,12 +353,19 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="test.ss" />
+    <Content Include="SchemeFiles\robotactions.ss">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="lib\App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)lib\ironscheme" "$(TargetDir)\ironscheme\" /S /Y
+XCOPY "$(ProjectDir)lib\srfi" "$(TargetDir)\srfi\" /S /Y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
