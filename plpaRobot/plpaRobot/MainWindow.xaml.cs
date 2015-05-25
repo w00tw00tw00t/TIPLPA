@@ -41,8 +41,9 @@ namespace plpaRobot
             //_robot.SetRobot(1, 5);
             string text = "(string-split \"" + ProgramEditor.Text + "\" \n)";
 
-            object a = Schemer.Eval("(eval (read (open-input-string \"(moveRight)\" \"\")))");
-            object test = Schemer.Eval("(runProgram \"" + ProgramEditor.Text + "\")");
+            //object a = Schemer.Eval("(evalFunctionInString \"(moveRight)\")");
+            object tet = Schemer.Eval("(runProgram \"" + ProgramEditor.Text + "\")");
+            
         }
 
         private void Menu_Open(object sender, RoutedEventArgs e)

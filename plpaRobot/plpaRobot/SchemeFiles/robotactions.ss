@@ -190,14 +190,14 @@
   (lambda (programString)
      (let ((functionList (str-split programString #\newline)))
        (if (pair? functionList)
-           (map evalFunctionInString functionList)
-           functionList)
+           (map evalFunctionInString functionList))
        )))
     
 
 (define evalFunctionInString
   (lambda expression
-    (eval (read (open-input-string (car expression))))))
+     ;(read (open-input-string (string-trim (car expression))))))
+     ((eval (car (read (open-input-string (string-trim (car expression))))) (interaction-environment)))))
 
 
 (define (str-split str ch)
