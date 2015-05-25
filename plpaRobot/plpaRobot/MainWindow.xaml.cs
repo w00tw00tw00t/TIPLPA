@@ -228,10 +228,6 @@ namespace plpaRobot
 
         private int[,] ParseFloorplan(string floorplanstring)
         {
-
-
-
-
             string[] rows = Regex.Matches(floorplanstring, @"\(([^\)]+)\)")
                 .Cast<Match>()
                 .Select(x => x.Value.TrimStart('(').TrimEnd(')'))
