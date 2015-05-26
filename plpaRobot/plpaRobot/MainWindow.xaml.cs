@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Timers;
 using System.Windows.Threading;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 
 namespace plpaRobot
@@ -28,15 +29,14 @@ namespace plpaRobot
         {
             InitializeComponent();
 
-            Schemer.doImports();
-            Schemer.loadSchemeFile("SchemeFiles/robotactions.ss");
+            InitializeScheme();
 
-            _robot = new Robot();
-            
-            object test = Schemer.Eval("(string-split \"do re mi\" \" \")");
-            //var data = GetDummyData();// Do somthing to convert scheme from filepath to int[,]
-            //CreateFloorPlan(data);
-            //_robot.SetRobot(5,1);
+            ProgramOutput.TextChanged += (sender, e) =>
+            {
+                ProgramOutput.ScrollToEnd();   
+            };
+
+            _robot = new Robot(ProgramOutput);
         }
 
         private  void RunProgramClicked(object sender, RoutedEventArgs e)
@@ -47,7 +47,7 @@ namespace plpaRobot
             }
             catch (Exception df)
             {
-                MessageBox.Show("You did something wrong! " + df.Message);
+                ProgramOutput.AppendText("\r\n" +df.Message);
             }
         }
 
@@ -63,14 +63,17 @@ namespace plpaRobot
                 return;
 
             Schemer.loadSchemeFile(openFileDialog.FileName);
-            string floorplan = (Schemer.Eval("floorplan") as IronScheme.Runtime.Cons).PrettyPrint;
-
-
-            int[,] floorplanvalues = ParseFloorplan(floorplan);
 
 
 
-            CreateFloorPlan(floorplanvalues);
+            string floorplan = Schemer.GetFloorPlan();
+
+            if(floorplan != null)
+            {
+
+                int[,] floorplanvalues = ParseFloorplan(floorplan);
+                CreateFloorPlan(floorplanvalues);
+            }
         }
 
         private void Menu_Exit(object sender, RoutedEventArgs e)
@@ -281,6 +284,28 @@ namespace plpaRobot
 
             };
             
+        }
+
+        private void ResetOutput(object sender, RoutedEventArgs e)
+        {
+            ProgramOutput.Text = "";
+        }
+
+        private void ResetEnv(object sender, RoutedEventArgs e)
+        {
+            Schemer.resetEval();
+
+            InitializeScheme();
+
+
+            if(_robot.Grid != null)
+            _robot.Grid.Children.Clear();
+        }
+
+        private static void InitializeScheme()
+        {
+            Schemer.doImports();
+            Schemer.loadSchemeFile("SchemeFiles/robotactions.ss");
         }
 
 

@@ -2,13 +2,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Robot Programmer" Height="350" Width="525">
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <DockPanel 
             DockPanel.Dock="Top"
             Grid.Row="0">
@@ -26,7 +26,7 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        
+
         <Grid Grid.Row="1" x:Name="ContentGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -38,24 +38,35 @@
                 Width="5"
                 HorizontalAlignment="Stretch" />
             <!-- Left -->
-            
+
             <!-- Right -->
             <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="60" />
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
 
-                <TextBox 
+                <TextBox Grid.ColumnSpan="3"
                 x:Name="ProgramEditor" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
                 Grid.Row="0" 
                 AcceptsReturn="True" 
-                IsReadOnly="False" />
+                IsReadOnly="False"
+                />
 
-                <Button Click="RunProgramClicked" Grid.Row="1" Margin="2, 2, 2, 2">Run Program</Button>
+                <TextBox x:Name="ProgramOutput" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"  Grid.ColumnSpan="3" TextWrapping="Wrap" IsReadOnly="True" Text="Program output.." Grid.Row="1"/>
+                <Button Click="RunProgramClicked" Grid.Row="2"  Grid.Column="0" Content="Run Program"/>
+                <Button Click="ResetOutput" Grid.Row="2" Grid.Column="1" Content="Reset Output"/>
+                <Button Click="ResetEnv" Grid.Row="2" Grid.Column="2" Content="Reset Env"/>
             </Grid>
 
         </Grid>
-        
+
     </Grid>
 </Window>

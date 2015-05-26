@@ -19,6 +19,12 @@ namespace plpaRobot
         private Direction _direction;
 
         public Grid Grid;
+        private TextBox ProgramOutput;
+
+        public Robot(TextBox ProgramOutput)
+        {
+            this.ProgramOutput = ProgramOutput;
+        }
 
         public enum Direction
         {
@@ -267,19 +273,40 @@ namespace plpaRobot
         internal async void SetRobot(IronScheme.Runtime.Cons result)
         {
             var list = result.ToList();
-            try
+
+            foreach (Object x in list)
             {
-                foreach (Cons x in list)
+                if (x is Cons)
                 {
-                    await Task.Delay(100);
                     Cons d = (Cons)x;
-                    SetRobot((UInt32)((Int32)(((Cons)d.cdr).car)), (UInt32)((Int32)d.car));
+                    ProgramOutput.Text += "\n" + d.PrettyPrint;
+
+                    try
+                    {
+                        SetRobot((UInt32)((Int32)(((Cons)d.cdr).car)), (UInt32)((Int32)d.car));
+                    } catch (Exception e)
+                    {
+                        ProgramOutput.Text += "\n" + "Moving robot error: " + e.Message;
+                    }
                 }
-            }
-            catch (InvalidCastException)
-            {
-                MessageBox.Show("You can't move outside the grid. ");
+                else if(x is String)
+                {
+                    ProgramOutput.Text += "\n" + (String)x;
+                }
+                else if(x is int)
+                {
+                    ProgramOutput.Text += "\n" + (int)x;
+                }
+                else
+                {
+
+                    ProgramOutput.Text += "\n" +"wtf: unhandled error";
+
+                }
+
+                await Task.Delay(100);
             }
         }
+            
     }
 }
