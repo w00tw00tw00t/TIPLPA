@@ -49,6 +49,9 @@
         (begin
           (setVariable 'x x 0 '())
           (setVariable 'y y 0 '())
+          (setVariable 'dir 0 0 '())
+          (setVariable 'carries 0 0 '())
+          (setVariable 'carriesTo 0 0 '())
           (list (getX) (getY)))
         (begin
           (if (= x (- (length (car floorplan)) 1))
@@ -101,8 +104,16 @@
              ))
        "Some error"
        (begin
-        (setVariable 'x (+ (getX) 1) 0 (list))
+        (setVariable 'x (- (getX) 1) 0 (list))
         (list (getX) (getY)))))
+
+(define (turnClockwise)
+  (lambda (times)
+    (setVariable 'dir (modulo (+ times (getDir)) 4) 0 '())))
+
+(define (turnCounterclockwise)
+  (lambda (times)
+    (setVariable 'dir (modulo (abs (- (getDir) times)) 4) 0 '())))
 
 (define adjacentspots
   (lambda (lookfor)
@@ -133,7 +144,40 @@
            #f) #t) 
       (else #f))))       
     
-  
+(define lookInDirection
+  (lambda (lookfor)
+    (cond ((= (getDir) 0 )
+           (begin
+             (if (= (getX) 0)
+                 #f
+                 (begin
+                   (if (= (getTileValueXY (- (getX) 1) (getY)) (getTileValueName lookfor))
+                       #t
+                       #f)))))
+          ((= (getDir) 1 )
+           (begin
+             (if (= (getY) Y)
+                 #f
+                 (begin
+                   (if (= (getTileValueXY (getX) (- 1 (getY))) (getTileValueName lookfor))
+                       #t
+                       #f)))))
+          ((= (getDir) 2 )
+           (begin
+             (if (= (getX) (- (length (car floorplan)) 1))
+                 #f
+                 (begin
+                   (if (= (getTileValueXY (+ (getX) 1) (getY)) (getTileValueName lookfor))
+                       #t
+                       #f)))))
+          ((= (getDir) 3 )
+           (begin
+             (if (= (getY) (- (length (floorplan)) 1))
+                 #f
+                 (begin
+                   (if (= (getTileValueXY (getX) (+ 1 (getY))) (getTileValueName lookfor))
+                       #t
+                       #f))))))))
 (define (pickup)
     (if (= (getCarries) 0)
         (begin
