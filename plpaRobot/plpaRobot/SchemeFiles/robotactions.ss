@@ -70,7 +70,7 @@
 
 (define moveBackward
   (lambda (times)
-    (let (invertedDirvalues '(('up . 2) ('right . 3) ('down . 0) ('left 1)))
+    (let ((invertedDirvalues '(('up . 2) ('right . 3) ('down . 0) ('left 1))))
     (cond
       ((= (getDir) (cdr (assoc 'up invertedDirvalues))) (moveUp times))
       ((= (getDir) (cdr (assoc 'right invertedDirvalues))) (moveRight times))
@@ -79,7 +79,7 @@
           
 (define (moveUp)
   (lambda (times)
-    (moveUpDown times (list))))
+    (moveUp times (list))))
 
 (define moveUpHelper
   (lambda (times resultlist)
@@ -93,7 +93,7 @@
            (begin
              (setVariable 'y (- (getY) 1) 0 (list))
              (moveUpHelper (- times 1) (append resultlist (list (list "pos" (getX) (getY))))))))
-        resultlist))
+        resultlist)))
 
 (define moveDown
   (lambda (times)
@@ -111,7 +111,7 @@
            (begin
              (setVariable 'y (+ (getY) 1) 0 (list))
              (moveDownHelper (- times 1) (append resultlist (list (list "pos" (getX) (getY))))))))
-        resultlist))
+        resultlist)))
     
 
 
