@@ -45,11 +45,11 @@ namespace plpaRobot
             try
             {
                 _robot.Parser((Cons)((Cons)Schemer.Eval("(runProgram \"" + ProgramEditor.Text + "\")")));
-            }
+             }
             catch (Exception df)
-            {
-                ProgramOutput.AppendText("\r\n" +df.Message);
-            }
+           {
+                 ProgramOutput.AppendText("\r\n" +df.Message);
+             }
         }
 
         private void Menu_Open(object sender, RoutedEventArgs e)
