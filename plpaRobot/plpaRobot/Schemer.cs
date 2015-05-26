@@ -8,7 +8,7 @@ using IronScheme;
 using IronScheme.Runtime;
 namespace plpaRobot
 {
-    class Schemer
+    public class Schemer
     {
         public static void loadAllSchemeFiles(string directory)
         {
@@ -48,6 +48,14 @@ namespace plpaRobot
             Eval("(import (ironscheme strings))");
             Eval("(import (srfi :6))");
             
+        }
+
+        public static string ConvertCoordinatesToString(string command)
+        {
+            var eval = Eval(command);
+
+            var s = eval as string;
+            return s ?? ((Cons) eval).PrettyPrint;
         }
 
     }
