@@ -1,8 +1,10 @@
+(define dirvalues '((up . 0) (right . 1) (down . 2) (left . 3)))
+
 (define tilestatus '((empty . 0 ) (path . 1) (park . 2) (ws0 . 3) (ws1 . 4) (ws2 . 5) (ws3 . 6) (ws4 . 7)
                      (ws0drop . 8) (ws0pick . 9)(ws1drop . 10) (ws1pick . 11) (ws2drop . 12) (ws2pick . 13)
                      (ws3drop . 14) (ws3pick . 15) (ws4drop . 16) (ws4pick . 17)))
 
-(define robotstatus '((x . 0) (y . 0) (dir . 0) (carries . 0) (carriesTo . 0)))
+(define robotstatus '((x . 0) (y . 8) (dir . 0) (carries . 0) (carriesTo . 0)))
 
 (define (getX)
   (cdr(assoc 'x robotstatus)))
@@ -49,9 +51,6 @@
         (begin
           (setVariable 'x x 0 '())
           (setVariable 'y y 0 '())
-          (setVariable 'dir 0 0 '())
-          (setVariable 'carries 0 0 '())
-          (setVariable 'carriesTo 0 0 '())
           (list (getX) (getY)))
         (begin
           (if (= x (- (length (car floorplan)) 1))
@@ -60,8 +59,9 @@
                     "No parking found for initializing robot"
                     (initRobot 0 (+ y 1))))
               (initRobot (+ x 1) y))))))
-  
+ 
 
+  
 (define (moveUp)
   (if
    (or (= (getY) 0)                                                                   ;check to see if at edge => fail = errormessage
@@ -85,35 +85,73 @@
         (list (getX) (getY)))))
 
 
-(define (moveRight)
-    (if
-     (or (= (getX) (length (car floorplan)))                                           ;check to see if at edge => fail = errormessage
-        (and (not (= (getTileValueXY (+ (getX) 1) (getY) ) (getTileValueName 'path)))  ;check if tile x+1 is movable => fail = errormessage
-             (not (= (getTileValueXY (+ (getX) 1) (getY) ) (getTileValueName 'park)))
-             ))
-       "Some error"
-       (begin
-        (setVariable 'x (+ (getX) 1) 0 (list))
-        (list (getX) (getY)))))
-
-(define (moveLeft)
-    (if
-      (or (= (getX) 0)                                                                 ;check to see if at edge => fail = errormessage
-        (and (not (= (getTileValueXY (- (getX) 1) (getY) ) (getTileValueName 'path)))  ;check if tile x+1 is movable => fail = errormessage
-             (not (= (getTileValueXY (- (getX) 1) (getY) ) (getTileValueName 'park)))
-             ))
-       "Some error"
-       (begin
-        (setVariable 'x (- (getX) 1) 0 (list))
-        (list (getX) (getY)))))
-
-(define (turnClockwise)
+(define moveRight
   (lambda (times)
-    (setVariable 'dir (modulo (+ times (getDir)) 4) 0 '())))
+    (moveRightHelper times (list))))
 
-(define (turnCounterclockwise)
+(define moveRightHelper
+  (lambda (times resultlist)
+    (if (> times 0)
+        (begin
+          (if
+           (or (= (getX) (length (car floorplan)))                                           ;check to see if at edge => fail = errormessage
+               (and (not (= (getTileValueXY (+ (getX) 1) (getY) ) (getTileValueName 'path)))  ;check if tile x+1 is movable => fail = errormessage
+                    (not (= (getTileValueXY (+ (getX) 1) (getY) ) (getTileValueName 'park)))
+                    ))
+           (moveRightHelper (- times 1) (append resultlist (list (list "Error: left is not a valid move direction"))))
+           (begin
+             (setVariable 'x (+ (getX) 1) 0 (list))
+            (moveRightHelper (- times 1) (append resultlist (list (list "pos" (getX) (getY))))))))
+        resultlist)))
+                                    
+(define moveLeft
   (lambda (times)
-    (setVariable 'dir (modulo (abs (- (getDir) times)) 4) 0 '())))
+    (moveLeftHelper times (list))))
+
+(define moveLeftHelper
+  (lambda (times resultlist)
+    (if (> times 0)
+        (begin
+          (if
+           (or (= (getX) 0)                                                                 ;check to see if at edge => fail = errormessage
+               (and (not (= (getTileValueXY (- (getX) 1) (getY) ) (getTileValueName 'path)))  ;check if tile x+1 is movable => fail = errormessage
+                    (not (= (getTileValueXY (- (getX) 1) (getY) ) (getTileValueName 'park)))
+                    ))
+           (moveLeftHelper (- times 1) (append resultlist (list (list "Error: left is not a valid move direction"))))
+           (begin
+            (setVariable 'x (- (getX) 1) 0 (list))
+            (moveLeftHelper (- times 1) (append resultlist (list (list "pos" (getX) (getY))))))))
+        resultlist)))
+
+(define turnLeft
+  (lambda (times)
+    (turnLeftHelper times (list))))
+
+(define turnLeftHelper
+  (lambda (times resultlist)
+    (if (> times 0)
+        (begin 
+          (if (= (getDir) 0)
+              (setVariable 'dir 3 0 '())
+              (setVariable 'dir (- (getDir) 1) 0 '()))        
+          (turnLeftHelper (- times 1) (append resultlist (list (list "dir" (getDir))))))
+        resultlist)))
+  
+(define turnRight
+  (lambda (times)
+    (turnRightHelper times (list))))
+
+(define turnRightHelper
+  (lambda (times resultlist)
+    (if (> times 0)
+        (begin 
+          (if (= (getDir) 3)
+              (setVariable 'dir 0 0 '())
+              (setVariable 'dir (+ (getDir) 1) 0 '()))          
+          (turnRightHelper (- times 1) (append resultlist (list (list "dir" (getDir))))))
+        resultlist)))
+
+        
 
 (define adjacentspots
   (lambda (lookfor)
@@ -143,10 +181,10 @@
                  #f))
            #f) #t) 
       (else #f))))       
-    
+
 (define lookInDirection
   (lambda (lookfor)
-    (cond ((= (getDir) 0 )
+    (cond ((= (getDir) (cdr (assoc 'left dirvalues)))
            (begin
              (if (= (getX) 0)
                  #f
@@ -154,15 +192,15 @@
                    (if (= (getTileValueXY (- (getX) 1) (getY)) (getTileValueName lookfor))
                        #t
                        #f)))))
-          ((= (getDir) 1 )
+          ((= (getDir) (cdr (assoc 'up dirvalues)) )
            (begin
-             (if (= (getY) Y)
+             (if (= (getY) 0)
                  #f
                  (begin
-                   (if (= (getTileValueXY (getX) (- 1 (getY))) (getTileValueName lookfor))
+                   (if (= (getTileValueXY (getX) (- (getY) 1)) (getTileValueName lookfor))
                        #t
                        #f)))))
-          ((= (getDir) 2 )
+          ((= (getDir) (cdr (assoc 'right dirvalues)) )
            (begin
              (if (= (getX) (- (length (car floorplan)) 1))
                  #f
@@ -170,14 +208,15 @@
                    (if (= (getTileValueXY (+ (getX) 1) (getY)) (getTileValueName lookfor))
                        #t
                        #f)))))
-          ((= (getDir) 3 )
+          ((= (getDir) (cdr (assoc 'down dirvalues)) )
            (begin
-             (if (= (getY) (- (length (floorplan)) 1))
+             (if (= (getY) (- (length floorplan)) 1)
                  #f
                  (begin
                    (if (= (getTileValueXY (getX) (+ 1 (getY))) (getTileValueName lookfor))
                        #t
                        #f))))))))
+  
 (define (pickup)
     (if (= (getCarries) 0)
         (begin
@@ -234,14 +273,16 @@
   (lambda (programString)
      (let ((functionList (str-split programString #\newline)))
        (if (pair? functionList)
-           (map evalFunctionInString functionList))
+           (map evalFunctionInString functionList)
+           (void))
        )))
+    
     
 
 (define evalFunctionInString
   (lambda expression
      ;(read (open-input-string (string-trim (car expression))))))
-     ((eval (car (read (open-input-string (string-trim (car expression))))) (interaction-environment)))))
+     ((eval (read (open-input-string (string-trim (car expression)))) (interaction-environment)))))
 
 
 (define (str-split str ch)
@@ -258,4 +299,6 @@
                   (split 0 0))))
     
      
+
+        
  
