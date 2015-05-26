@@ -60,7 +60,7 @@ namespace plpaRobot
             
         }
 
-        public static string ConvertCoordinatesToString(string command)
+        public static string GetStringFromCommand(string command)
         {
             var eval = Eval(command);
 
