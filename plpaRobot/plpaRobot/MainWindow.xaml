@@ -19,6 +19,8 @@
                         Header="Open"
                         Click="Menu_Open" />
                     <Separator />
+                    <MenuItem Header="Load Robot program" Click="MenuItem_LoadRobot"/>
+                    <Separator />
                     <MenuItem 
                         Header="Exit" 
                         Click="Menu_Exit">

@@ -14,6 +14,7 @@ using System.Timers;
 using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using System.IO;
 
 
 namespace plpaRobot
@@ -306,6 +307,20 @@ namespace plpaRobot
         {
             Schemer.doImports();
             Schemer.loadSchemeFile("SchemeFiles/robotactions.ss");
+        }
+
+        private void MenuItem_LoadRobot(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Scheme files (*.ss, *.scm)|*.ss;*.scm|All files (*.*)|*.*",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer)
+            };
+
+            if (openFileDialog.ShowDialog() != true)
+                return;
+
+            ProgramEditor.Text = File.ReadAllText(openFileDialog.FileName);
         }
 
 

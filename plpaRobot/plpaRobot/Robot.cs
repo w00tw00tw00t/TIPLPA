@@ -279,32 +279,59 @@ namespace plpaRobot
                 if (x is Cons)
                 {
                     Cons d = (Cons)x;
-                    ProgramOutput.Text += "\n" + d.PrettyPrint;
+                    ProgramOutput.Text += "\nDebug:" + d.PrettyPrint;
 
-                    try
+                    if(d.car is String)
                     {
-                        SetRobot((UInt32)((Int32)(((Cons)d.cdr).car)), (UInt32)((Int32)d.car));
-                    } catch (Exception e)
-                    {
-                        ProgramOutput.Text += "\n" + "Moving robot error: " + e.Message;
+                        switch((String) d.car)
+                        {
+                            case "pos":
+                                    SetRobotReal((Cons)d.cdr);
+                                    break;
+                            case "dir":
+                                    break;
+                            default:
+                                
+                                    ProgramOutput.Text += "\n" + d.car;
+                                    break;
+                        }
+
+                    } else {
+                       ParseIronToProgramOutput(d.car);
                     }
-                }
-                else if(x is String)
-                {
-                    ProgramOutput.Text += "\n" + (String)x;
-                }
-                else if(x is int)
-                {
-                    ProgramOutput.Text += "\n" + (int)x;
-                }
-                else
-                {
-
-                    ProgramOutput.Text += "\n" +"wtf: unhandled error";
 
                 }
+               ParseIronToProgramOutput(x);
 
                 await Task.Delay(100);
+            }
+        }
+
+        private void ParseIronToProgramOutput(Object x)
+        {
+            if (x is String)
+            {
+                ProgramOutput.Text += "\n" + (String)x;
+            }
+            else if (x is int)
+            {
+                ProgramOutput.Text += "\n" + (int)x;
+            }
+            else
+            {
+                ProgramOutput.Text += "\n" + "wtf: unhandled content";
+            }
+        }
+
+        private void SetRobotReal(Cons d)
+        {
+            try
+            {
+                SetRobot((UInt32)((Int32)(((Cons)d.cdr).car)), (UInt32)((Int32)d.car));
+            }
+            catch (Exception e)
+            {
+                ProgramOutput.Text += "\n" + "Moving robot error: " + e.Message;
             }
         }
             
