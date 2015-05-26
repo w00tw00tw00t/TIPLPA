@@ -8,6 +8,12 @@ using plpaRobot.Enumerables;
 using System.Text.RegularExpressions;
 using IronScheme;
 using IronScheme.Runtime;
+using System.Threading;
+using System.ComponentModel;
+using System.Timers;
+using System.Windows.Threading;
+using System.Threading.Tasks;
+
 
 namespace plpaRobot
 {
@@ -33,17 +39,16 @@ namespace plpaRobot
             //_robot.SetRobot(5,1);
         }
 
-        private void RunProgramClicked(object sender, RoutedEventArgs e)
+        private  void RunProgramClicked(object sender, RoutedEventArgs e)
         {
-            //var content = ProgramEditor.Text;
-
-            //MessageBox.Show(content);
-            //_robot.SetRobot(1, 5);
-            string text = "(string-split \"" + ProgramEditor.Text + "\" \n)";
-
-            //object a = Schemer.Eval("(evalFunctionInString \"(moveRight)\")");
-            object tet = Schemer.Eval("(runProgram \"" + ProgramEditor.Text + "\")");
-            
+            try
+            {
+                _robot.SetRobot((Cons)Schemer.Eval("(runProgram \"" + ProgramEditor.Text + "\")"));
+            }
+            catch (Exception df)
+            {
+                MessageBox.Show("You did something wrong! " + df.Message);
+            }
         }
 
         private void Menu_Open(object sender, RoutedEventArgs e)

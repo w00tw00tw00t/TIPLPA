@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using IronScheme.Runtime;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -77,6 +80,10 @@ namespace plpaRobot
             
             if(_direction != Direction.Up)
                 SetRobotDirection(_direction);
+
+
+            canvas.UpdateLayout();
+            
         }
 
         private void SetRobotDirection(Direction direction)
@@ -135,6 +142,7 @@ namespace plpaRobot
             canvas.Children.Add(rect);
             _direction = direction;
         }
+
 
         public void MoveRobotAbsolute(string message)
         {
@@ -255,5 +263,23 @@ namespace plpaRobot
 
         }
 
+
+        internal async void SetRobot(IronScheme.Runtime.Cons result)
+        {
+            var list = result.ToList();
+            try
+            {
+                foreach (Cons x in list)
+                {
+                    await Task.Delay(100);
+                    Cons d = (Cons)x;
+                    SetRobot((UInt32)((Int32)(((Cons)d.cdr).car)), (UInt32)((Int32)d.car));
+                }
+            }
+            catch (InvalidCastException)
+            {
+                MessageBox.Show("You can't move outside the grid. ");
+            }
+        }
     }
 }

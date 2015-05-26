@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="IronScheme">
-      <HintPath>..\..\..\..\IronScheme\IronScheme\IronScheme.dll</HintPath>
+      <HintPath>..\packages\IronScheme.0.9.113668\lib\IronScheme.dll</HintPath>
     </Reference>
     <Reference Include="IronScheme.Web.Runtime">
       <HintPath>..\packages\IronScheme.0.9.113668\lib\IronScheme.Web.Runtime.dll</HintPath>
@@ -124,10 +124,7 @@
     <None Include="lib\ironscheme\regex-cond.sls" />
     <None Include="lib\ironscheme\regex.sls" />
     <None Include="lib\ironscheme\registry.sls" />
-    <Content Include="lib\ironscheme\strings.sls">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CustomToolNamespace>ironscheme</CustomToolNamespace>
-    </Content>
+    <None Include="lib\ironscheme\strings.sls" />
     <None Include="lib\ironscheme\syntax.sls" />
     <None Include="lib\ironscheme\syntax\define-macro.sls" />
     <None Include="lib\ironscheme\syntax\library-utils.sls" />
