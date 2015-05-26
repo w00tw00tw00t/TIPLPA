@@ -70,16 +70,16 @@
 
 (define moveBackward
   (lambda (times)
-    (let ((invertedDirvalues '(('up . 2) ('right . 3) ('down . 0) ('left 1))))
+    (let ((invertedDirvalues '(('up . 2) ('right . 3) ('down . 0) ('left . 1))))
     (cond
       ((= (getDir) (cdr (assoc 'up invertedDirvalues))) (moveUp times))
       ((= (getDir) (cdr (assoc 'right invertedDirvalues))) (moveRight times))
       ((= (getDir) (cdr (assoc 'down invertedDirvalues))) (moveDown times))
       ((= (getDir) (cdr (assoc 'left invertedDirvalues))) (moveLeft times))))))                            
           
-(define (moveUp)
+(define moveUp
   (lambda (times)
-    (moveUp times (list))))
+    (moveUpHelper times (list))))
 
 (define moveUpHelper
   (lambda (times resultlist)
@@ -89,7 +89,7 @@
            (or (= (getY) 0)                                                                   ;check to see if at edge => fail = errormessage
                (and (not (= (getTileValueXY (getX) (- (getY) 1)) (getTileValueName 'path)))  ;check if tile y-1 is movable => fail = errormessage
                     (not (= (getTileValueXY (getX) (- (getY) 1)) (getTileValueName 'park)))))
-           (moveDownHelper (- times 1) (append resultlist (list (list "Error: up is not a valid move direction"))))
+           (moveUpHelper (- times 1) (append resultlist (list (list "Error: up is not a valid move direction"))))
            (begin
              (setVariable 'y (- (getY) 1) 0 (list))
              (moveUpHelper (- times 1) (append resultlist (list (list "pos" (getX) (getY))))))))
@@ -180,8 +180,6 @@
               (setVariable 'dir (+ (getDir) 1) 0 '()))          
           (turnRightHelper (- times 1) (append resultlist (list (list "dir" (getDir))))))
         resultlist)))
-
-        
 
 (define adjacentspots
   (lambda (lookfor)
