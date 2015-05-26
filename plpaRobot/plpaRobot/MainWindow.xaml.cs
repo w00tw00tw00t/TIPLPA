@@ -44,7 +44,7 @@ namespace plpaRobot
         {
             try
             {
-                _robot.SetRobot((Cons)Schemer.Eval("(runProgram \"" + ProgramEditor.Text + "\")"));
+                _robot.Parser((Cons)Schemer.Eval("(runProgram \"" + ProgramEditor.Text + "\")"));
             }
             catch (Exception df)
             {

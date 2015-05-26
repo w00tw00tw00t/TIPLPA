@@ -270,7 +270,7 @@ namespace plpaRobot
         }
 
 
-        internal async void SetRobot(IronScheme.Runtime.Cons result)
+        internal async void Parser(IronScheme.Runtime.Cons result)
         {
             var list = result.ToList();
 
@@ -286,7 +286,7 @@ namespace plpaRobot
                         switch((String) d.car)
                         {
                             case "pos":
-                                    SetRobotReal((Cons)d.cdr);
+                                    SetRobot((Cons)d.cdr);
                                     break;
                             case "dir":
                                     break;
@@ -323,7 +323,7 @@ namespace plpaRobot
             }
         }
 
-        private void SetRobotReal(Cons d)
+        private void SetRobot(Cons d)
         {
             try
             {
