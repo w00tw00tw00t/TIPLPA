@@ -119,19 +119,6 @@ namespace plpaRobot
             }
             else
             {
-                /*var width = canvas.ActualHeight / 25;
-                var margin = (canvas.ActualHeight / 2 - (width / 2));
-                var top = canvas.ActualHeight/2;
-                var bottom = canvas.ActualWidth/2;
-
-                rect.Height = canvas.ActualHeight / 2;
-                rect.Width = width;
-                rect.Margin = new Thickness(margin, top, margin, bottom);
-                rect.Fill = Brushes.White;
-                rect.RenderTransformOrigin = new Point(0.5, 1);
-
-                rect.RenderTransform = direction == Direction.Right ? new RotateTransform(90) : new RotateTransform(270);*/
-
                 var width = canvas.ActualWidth/2;
                 var heigth = canvas.ActualHeight / lineWidth;
                 var margin = canvas.ActualHeight/2 - heigth/2;
@@ -150,118 +137,6 @@ namespace plpaRobot
         }
 
 
-        public void MoveRobotAbsolute(string message)
-        {
-            if (!_placed || Grid == null)
-                return;
-
-            switch (message)
-            {
-                case "up":
-                    if (_x == 0)
-                        break;
-                    SetRobot(_x - 1, _y);
-                    break;
-                case "left":
-                    if (_y == 0)
-                        break;
-                    SetRobot(_x, _y - 1);
-                    break;
-                case "down":
-                    if (_x == Grid.RowDefinitions.Count - 1)
-                        break;
-                    SetRobot(_x + 1, _y);
-                    break;
-                case "right":
-                    if (_y == Grid.ColumnDefinitions.Count - 1)
-                        break;
-                    SetRobot(_x, _y + 1);
-                    break;
-            }
-        }
-
-        public void MoveRobotRelative(string message)
-        {
-            if (!_placed || Grid == null)
-                return;
-
-            if (message == "forward")
-            {
-                switch (_direction)
-                {
-                    case Direction.Down:
-                        MoveRobotAbsolute("down");
-                        break;
-                    case Direction.Left:
-                        MoveRobotAbsolute("left");
-                        break;
-                    case Direction.Right:
-                        MoveRobotAbsolute("right");
-                        break;
-                    case Direction.Up:
-                        MoveRobotAbsolute("up");
-                        break;
-                }
-
-                SetRobotDirection(_direction);
-            }
-            else if (message == "backward")
-            {
-                switch (_direction)
-                {
-                    case Direction.Down:
-                        MoveRobotAbsolute("up");
-                        break;
-                    case Direction.Left:
-                        MoveRobotAbsolute("right");
-                        break;
-                    case Direction.Right:
-                        MoveRobotAbsolute("left");
-                        break;
-                    case Direction.Up:
-                        MoveRobotAbsolute("down");
-                        break;
-                }
-
-                SetRobotDirection(_direction);
-            }
-            else if (message == "turnl")
-            {
-                switch (_direction)
-                {
-                    case Direction.Down:
-                        SetRobotDirection(Direction.Right);
-                        break;
-                    case Direction.Left:
-                        SetRobotDirection(Direction.Down);
-                        break;
-                    case Direction.Right:
-                        SetRobotDirection(Direction.Up);
-                        break;
-                    case Direction.Up:
-                        SetRobotDirection(Direction.Left);
-                        break;
-                }
-            }
-            else if (message == "turnr")
-            {
-                switch (_direction)
-                {
-                    case Direction.Down:
-                        SetRobotDirection(Direction.Left);
-                        break;
-                    case Direction.Left:
-                        SetRobotDirection(Direction.Up);
-                        break;
-                    case Direction.Right:
-                        SetRobotDirection(Direction.Down);
-                        break;
-                    case Direction.Up:
-                        SetRobotDirection(Direction.Right);
-                        break;
-                }
-            }
-        }
 
         private Canvas GetCanvasFromCoordinates(uint row, uint column)
         {
@@ -269,42 +144,77 @@ namespace plpaRobot
 
         }
 
-
-        internal async void Parser(IronScheme.Runtime.Cons result)
+        internal  async void Parser(IronScheme.Runtime.Cons result)
         {
             var list = result.ToList();
-
-            foreach (Object x in list)
+            foreach(Object o in list)
             {
-                if (x is Cons)
+
+                if (o is Cons)
                 {
-                    Cons d = (Cons)x;
-                    ProgramOutput.Text += "\nDebug:" + d.PrettyPrint;
+                    var listOfCommands = Schemer.ConvertNestedConsToList((Cons)o);
 
-                    if(d.car is String)
+
+                    var list2 = ((Cons)o).ToList();
+
+                    foreach (Object command in list2)
                     {
-                        switch((String) d.car)
-                        {
-                            case "pos":
-                                    SetRobot((Cons)d.cdr);
-                                    break;
-                            case "dir":
-                                    break;
-                            default:
-                                
-                                    ProgramOutput.Text += "\n" + d.car;
-                                    break;
-                        }
+                        ParseOneCons(command);
+                        await Task.Delay(100);
 
-                    } else {
-                       ParseIronToProgramOutput(d.car);
+                    }
+                }
+                else
+                {
+                     ParseIronToProgramOutput(o);
+                }
+            }
+        }
+
+
+        private void ParseOneCons(Object x)
+        {
+
+            if (x is Cons)
+            {
+                Cons d = (Cons)x;
+
+
+                string cmd = (String)d.car;
+
+                ProgramOutput.Text += "\nDebug:" + d.PrettyPrint;
+
+                if (d.car is String)
+                {
+                    switch ((String)d.car)
+                    {
+                        case "pos":
+                            SetRobot((Cons)d.cdr);
+                            break;
+                        case "dir":
+                            SetRobotDirection((Cons)d.cdr);
+                            break;
+                        default:
+
+                            ProgramOutput.Text += "\n" + d.car;
+                            break;
                     }
 
                 }
-               ParseIronToProgramOutput(x);
+                else
+                {
+                    ParseIronToProgramOutput(d.car);
+                }
 
-                await Task.Delay(100);
-            }
+            } else
+            ParseIronToProgramOutput(x);
+
+        }
+
+        private void SetRobotDirection(Cons dir)
+        {
+            var direction = (Direction) ((Int32) dir.car);
+            SetRobotDirection(direction);
         }
 
         private void ParseIronToProgramOutput(Object x)
@@ -319,11 +229,11 @@ namespace plpaRobot
             }
             else
             {
-                ProgramOutput.Text += "\n" + "wtf: unhandled content";
+                ProgramOutput.Text += "\n" + "wtf: unhandled content : " + x.GetType().ToString() ;
             }
         }
 
-        private void SetRobot(Cons d)
+         private   void SetRobot(Cons d)
         {
             try
             {

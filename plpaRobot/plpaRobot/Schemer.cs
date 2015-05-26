@@ -68,6 +68,21 @@ namespace plpaRobot
             return s ?? ((Cons) eval).PrettyPrint;
         }
 
+        public static List<Cons> ConvertNestedConsToList(Cons o)
+        {
+            var list = new List<Cons>();
+            list.Add((Cons)o.car);
+            if(o.cdr != null)
+            {
+               foreach( Cons d in ConvertNestedConsToList((Cons)o.cdr))
+               {
+                   list.Add(d);
+               }
+            }
+
+            return list;
+        }
+
         internal static string GetFloorPlan()
         {
             try { 
