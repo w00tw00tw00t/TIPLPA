@@ -1,4 +1,4 @@
-(define dirvalues '((up . 0) (right . 1) (down . 2) (left . 3)))
+(define dirvalues '((up . 0) (right . 1) (down . 2) (left . 3) (penis . 4)))
 
 (define tilestatus '((empty . 0 ) (path . 1) (park . 2) (ws0 . 3) (ws1 . 4) (ws2 . 5) (ws3 . 6) (ws4 . 7)
                      (ws0drop . 8) (ws0pick . 9)(ws1drop . 10) (ws1pick . 11) (ws2drop . 12) (ws2pick . 13)
@@ -62,27 +62,7 @@
  
 
   
-(define (moveUp)
-  (if
-   (or (= (getY) 0)                                                                   ;check to see if at edge => fail = errormessage
-        (and (not (= (getTileValueXY (getX) (- (getY) 1)) (getTileValueName 'path)))  ;check if tile y-1 is movable => fail = errormessage
-             (not (= (getTileValueXY (getX) (- (getY) 1)) (getTileValueName 'park)))
-             ))
-      "Some error"
-      (begin
-        (setVariable 'y (- (getY) 1) 0 (list))
-        (list (getX) (getY)))))
 
-(define (moveDown)
-  (if
-    (or (= (getY) (length floorplan))                                       ;check to see if at edge => fail = errormessage
-        (and (not (= (getTileValueXY (getX) (+ (getY) 1)) (getTileValueName 'path)))  ;check if tile y+1 is movable => fail = errormessage
-             (not (= (getTileValueXY (getX) (+ (getY) 1)) (getTileValueName 'park)))
-             ))
-       "Some error"
-       (begin
-        (setVariable 'y (+ (getY) 1) 0 (list))
-        (list (getX) (getY)))))
 
 
 (define moveRight
@@ -104,23 +84,7 @@
             (moveRightHelper (- times 1) (append resultlist (list (list "pos" (getX) (getY))))))))
         resultlist)))
 
-(define moveForward
-  (lambda (times)
-    (cond
-      ((= (getDir) (cdr (assoc 'up dirvalues))) (moveUp times))
-      ((= (getDir) (cdr (assoc 'right dirvalues))) (moveRight times))
-      ((= (getDir) (cdr (assoc 'down dirvalues))) (moveDown times))
-      ((= (getDir) (cdr (assoc 'left dirvalues))) (moveLeft times))
-)))
 
-(define moveBackward
-  (lambda (times)
-    (cond
-      ((= (getDir) (cdr (assoc 'down dirvalues))) (moveUp times))
-      ((= (getDir) (cdr (assoc 'left dirvalues))) (moveRight times))
-      ((= (getDir) (cdr (assoc 'up dirvalues))) (moveDown times))
-      ((= (getDir) (cdr (assoc 'right dirvalues))) (moveLeft times))
-)))
 	  
 (define moveDown
   (lambda (times)
@@ -354,5 +318,22 @@
     
      
 
+	 (define moveForward
+  (lambda (times)
+    (cond
+      ((= (getDir) (cdr (assoc 'left dirvalues))) (moveLeft times))
+      ((= (getDir) (cdr (assoc 'up dirvalues))) (moveUp times))
+      ((= (getDir) (cdr (assoc 'right dirvalues))) (moveRight times))
+      ((= (getDir) (cdr (assoc 'down dirvalues))) (moveDown times))
+)))
+
+(define moveBackward
+  (lambda (times)
+    (cond
+      ((= (getDir) (cdr (assoc 'right dirvalues))) (+ 1 times))
+      ((= (getDir) (cdr (assoc 'down dirvalues))) (moveUp times))
+      ((= (getDir) (cdr (assoc 'left dirvalues))) (moveRight times))
+      ((= (getDir) (cdr (assoc 'up dirvalues))) (moveDown times))
+)))
         
  
