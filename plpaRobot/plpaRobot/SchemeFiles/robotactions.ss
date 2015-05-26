@@ -59,30 +59,60 @@
                     "No parking found for initializing robot"
                     (initRobot 0 (+ y 1))))
               (initRobot (+ x 1) y))))))
- 
 
-  
+(define moveForward
+  (lambda (times)
+    (cond
+      ((= (getDir) (cdr (assoc 'up dirvalues))) (moveUp times))
+      ((= (getDir) (cdr (assoc 'right dirvalues))) (moveRight times))
+      ((= (getDir) (cdr (assoc 'down dirvalues))) (moveDown times))
+      ((= (getDir) (cdr (assoc 'left dirvalues))) (moveLeft times)))))
+
+(define moveBackward
+  (lambda (times)
+    (let ((invertedDirvalues '(('up . 2) ('right . 3) ('down . 0) ('left 1))))
+    (cond
+      ((= (getDir) (cdr (assoc 'up invertedDirvalues))) (moveUp times))
+      ((= (getDir) (cdr (assoc 'right invertedDirvalues))) (moveRight times))
+      ((= (getDir) (cdr (assoc 'down invertedDirvalues))) (moveDown times))
+      ((= (getDir) (cdr (assoc 'left invertedDirvalues))) (moveLeft times))))))                            
+          
 (define (moveUp)
-  (if
-   (or (= (getY) 0)                                                                   ;check to see if at edge => fail = errormessage
-        (and (not (= (getTileValueXY (getX) (- (getY) 1)) (getTileValueName 'path)))  ;check if tile y-1 is movable => fail = errormessage
-             (not (= (getTileValueXY (getX) (- (getY) 1)) (getTileValueName 'park)))
-             ))
-      "Some error"
-      (begin
-        (setVariable 'y (- (getY) 1) 0 (list))
-        (list (getX) (getY)))))
+  (lambda (times)
+    (moveUp times (list))))
 
-(define (moveDown)
-  (if
-    (or (= (getY) (length floorplan))                                       ;check to see if at edge => fail = errormessage
-        (and (not (= (getTileValueXY (getX) (+ (getY) 1)) (getTileValueName 'path)))  ;check if tile y+1 is movable => fail = errormessage
-             (not (= (getTileValueXY (getX) (+ (getY) 1)) (getTileValueName 'park)))
-             ))
-       "Some error"
-       (begin
-        (setVariable 'y (+ (getY) 1) 0 (list))
-        (list (getX) (getY)))))
+(define moveUpHelper
+  (lambda (times resultlist)
+    (if (> times 0)
+        (begin
+          (if
+           (or (= (getY) 0)                                                                   ;check to see if at edge => fail = errormessage
+               (and (not (= (getTileValueXY (getX) (- (getY) 1)) (getTileValueName 'path)))  ;check if tile y-1 is movable => fail = errormessage
+                    (not (= (getTileValueXY (getX) (- (getY) 1)) (getTileValueName 'park)))))
+           (moveDownHelper (- times 1) (append resultlist (list (list "Error: up is not a valid move direction"))))
+           (begin
+             (setVariable 'y (- (getY) 1) 0 (list))
+             (moveUpHelper (- times 1) (append resultlist (list (list "pos" (getX) (getY))))))))
+        resultlist)))
+
+(define moveDown
+  (lambda (times)
+    (moveDownHelper times (list))))
+
+(define moveDownHelper
+  (lambda (times resultlist)
+    (if (> times 0)
+        (begin
+          (if
+           (or (= (getY) (length floorplan))                                       ;check to see if at edge => fail = errormessage
+               (and (not (= (getTileValueXY (getX) (+ (getY) 1)) (getTileValueName 'path)))  ;check if tile y+1 is movable => fail = errormessage
+                    (not (= (getTileValueXY (getX) (+ (getY) 1)) (getTileValueName 'park)))))
+           (moveDownHelper (- times 1) (append resultlist (list (list "Error: down is not a valid move direction"))))
+           (begin
+             (setVariable 'y (+ (getY) 1) 0 (list))
+             (moveDownHelper (- times 1) (append resultlist (list (list "pos" (getX) (getY))))))))
+        resultlist)))
+    
 
 
 (define moveRight
@@ -98,7 +128,7 @@
                (and (not (= (getTileValueXY (+ (getX) 1) (getY) ) (getTileValueName 'path)))  ;check if tile x+1 is movable => fail = errormessage
                     (not (= (getTileValueXY (+ (getX) 1) (getY) ) (getTileValueName 'park)))
                     ))
-           (moveRightHelper (- times 1) (append resultlist (list (list "Error: left is not a valid move direction"))))
+           (moveRightHelper (- times 1) (append resultlist (list (list "Error: right is not a valid move direction"))))
            (begin
              (setVariable 'x (+ (getX) 1) 0 (list))
             (moveRightHelper (- times 1) (append resultlist (list (list "pos" (getX) (getY))))))))
@@ -282,7 +312,7 @@
 (define evalFunctionInString
   (lambda expression
      ;(read (open-input-string (string-trim (car expression))))))
-     ((eval (read (open-input-string (string-trim (car expression)))) (interaction-environment)))))
+     (eval (read (open-input-string (string-trim (car expression)))) (interaction-environment))))
 
 
 (define (str-split str ch)
