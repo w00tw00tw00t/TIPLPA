@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using IronScheme;
 using IronScheme.Runtime;
+using System.Windows;
 namespace plpaRobot
 {
     class Schemer
@@ -18,7 +19,15 @@ namespace plpaRobot
 
         public static void loadSchemeFile(string filename)
         {
-            File.ReadAllText(filename).Eval();
+            try
+            {
+                File.ReadAllText(filename).Eval();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error loading file: " + e.Message);
+            }
+
         }
 
         public static object Eval(string scheme, Object[] parameter = null)
@@ -47,8 +56,21 @@ namespace plpaRobot
         {
             Eval("(import (ironscheme strings))");
             Eval("(import (srfi :6))");
+
             
         }
 
+
+        internal static string GetFloorPlan()
+        {
+            try { 
+                return (Eval("floorplan") as Cons).PrettyPrint;
+            }
+            catch (Exception )
+            {
+                return null;
+            }
+
+        }
     }
 }
