@@ -109,28 +109,28 @@ namespace plpaRobot.Tests
         public void RelativeMovement_MoveForward()
         {
             var result = Schemer.GetStringFromCommand("(turnRight 1)\n(moveForward 1)");
-            Assert.AreEqual("", result);
+            Assert.AreEqual("((\"pos\" 1 8))\n", result);
         }
 
         [Test]
         public void RelativeMovement_MoveForwardMultiple()
         {
             var result = Schemer.GetStringFromCommand("(turnRight 1)\n(moveForward 2)");
-            Assert.AreEqual("", result);
+            Assert.AreEqual("((\"pos\" 1 8) (\"pos\" 2 8))\n", result);
         }
 
         [Test]
         public void RelativeMovement_MoveBackward()
         {
             var result = Schemer.GetStringFromCommand("(turnLeft 1)\n(moveBackward 1)");
-            Assert.AreEqual("", result);
+            Assert.AreEqual("((\"pos\" 1 8))\n", result);
         }
 
         [Test]
         public void RelativeMovement_MoveBackwardMultiple()
         {
             var result = Schemer.GetStringFromCommand("(turnLeft 1)\n(moveBackward 2)");
-            Assert.AreEqual("", result);
+            Assert.AreEqual("((\"pos\" 1 8) (\"pos\" 2 8))\n", result);
         }
 
         #endregion
@@ -154,6 +154,108 @@ namespace plpaRobot.Tests
         #endregion
 
         #region Workstations
+
+        [Test]
+        public void Workstations_CorrectPickup()
+        {
+            var result =
+                Schemer.GetStringFromCommand(
+                    "(initRobot 0 0)\n" +
+                    "(turnRight 1)\n" +
+                    "(moveForward 29)\n" +
+                    "(turnLeft 1)\n" +
+                    "(moveForward 6)\n" +
+                    "(pickup)");
+            Assert.AreEqual("(\"pickup\" 1)\n", result);
+        }
+
+        [Test]
+        public void Workstations_WrongPickup()
+        {
+            var result = Schemer.GetStringFromCommand(
+                "(initRobot 0 0)\n" +
+                "(turnRight 1)\n" +
+                "(moveForward 8)\n" +
+                "(turnLeft 1)\n" +
+                "(moveForward 4)\n" +
+                "(turnLeft 1)\n" +
+                "(pickup)");
+            Assert.AreEqual("Error: Not correct pickup point", result);
+        }
+
+        [Test]
+        public void Workstations_CorrectDropOff()
+        {
+            var result =
+                Schemer.GetStringFromCommand(
+                    "(initRobot 0 0)\n" +
+                    "(turnRight 1)\n" +
+                    "(moveForward 29)\n" +
+                    "(turnLeft 1)\n" +
+                    "(moveForward 6)\n" +
+                    "(pickup)\n" +
+                    "(turnRight 2)\n" +
+                    "(moveForward 6)\n" +
+                    "(turnRight 1)\n" +
+                    "(moveForward 21)\n" +
+                    "(turnRight 1)\n" +
+                    "(moveForward 7)\n" +
+                    "(turnLeft 1)\n" +
+                    "(moveForward 2)\n" +
+                    "(turnLeft 1)\n" +
+                    "(dropoff)");
+            Assert.AreEqual("(\"dropoff\" 1)\n", result);
+        }
+
+        [Test]
+        public void Workstations_CorrectPickupWrongDropOff()
+        {
+            var result = Schemer.GetStringFromCommand(
+                "(initRobot 0 0)\n" +
+                "(turnRight 1)\n" +
+                "(moveForward 31)\n" +
+                "(turnLeft 1)\n" +
+                "(moveForward 6)\n" +
+                "(pickup)\n" +
+                "(turnLeft 2)\n" +
+                "(moveForward 19)\n" +
+                "(dropoff)");
+            Assert.AreEqual("Error: Not correct dropoff point", result);
+        }
+
+        [Test]
+        public void Workstataions_WrongPickupAfterCorrectDropOff()
+        {
+            var result = Schemer.GetStringFromCommand(
+                "(initRobot 0 0)\n" +
+                "(turnRight 1)\n" +
+                "(moveForward 29)\n" +
+                "(turnLeft 1)\n" +
+                "(moveForward 6)\n" +
+                "(pickup)\n" +
+                "(turnLeft 2)\n" +
+                "(moveForward 6)\n" +
+                "(turnRight 1)\n" +
+                "(moveForward 21)\n" +
+                "(turnRight 1)\n" +
+                "(moveForward 7)\n" +
+                "(turnLeft 1)\n" +
+                "(moveForward 2)\n" +
+                "(turnLeft 1)\n" +
+                "(dropoff)\n" +
+                "(turnLeft 1)\n" +
+                "(moveForward 2)\n" +
+                "(turnRight 1)\n" +
+                "(moveForward 7)\n" +
+                "(turnLeft 1)\n" +
+                "(moveForward 18)\n" +
+                "(turnRight 1)\n" +
+                "(moveForward 3)\n" +
+                "(turnRight 1)\n" +
+                "(pickup)");
+
+            Assert.AreEqual("Error: Not correct pickup point", result);
+        }
 
         #endregion
     }
