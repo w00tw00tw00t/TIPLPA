@@ -252,7 +252,7 @@
                 (begin
                   (setVariable 'carriesTo (+ (getCarriesTo) 1) 0 '())
                   (setVariable 'carries 1 0 '())
-                  (list "pickup" (getCarriesTo)))
+                  (list (list "pickup" (getCarriesTo))))
                 "Error: Not correct pickup point")))
         "Error: Allready carries package"))
         
@@ -281,7 +281,7 @@
                      (setVariable 'carriesTo 0 0 '())
                      (void))
                   (setVariable 'carries 0 0 '())
-                  (list "dropoff" (getCarriesTo)))
+                  (list (list "dropoff" (getCarriesTo))))
                 "Error: Not correct dropoff point")))
         "Error: Does not carry anything"))
    ;look in adjacent spots for dropoff
