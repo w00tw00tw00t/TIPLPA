@@ -309,20 +309,17 @@
 ;programstring = The commands to run, delimted by newline
 (define runProgram
   (lambda (programString)
-     (let ((functionList (str-split programString #\newline)))
-       (if (pair? functionList)
-           (map evalFunctionInString functionList)
-           (void))
-       )))
-    
-    
+           (map evalFunctionInString (str-split programString #\newline)))) ;call the evalFunctionInString, for all items in the list created by the string split.
 
+;Evaluates the string argument.
+;expression = the argument to evaluate
 (define evalFunctionInString
   (lambda expression
-     ;(read (open-input-string (string-trim (car expression))))))
+    ;trim white-spaces from the expression, create an open-input-string from this, and read that. Use the input in an eval call.
      (eval (read (open-input-string (string-trim (car expression)))) (interaction-environment))))
 
-
+;External string split procedure. Procured from Matthew Phillips (https://gist.github.com/matthewp/2324447)
+;str = string to split, ch = delimiter.
 (define (str-split str ch)
   (let ((len (string-length str)))
     (letrec
