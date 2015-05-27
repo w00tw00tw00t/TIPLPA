@@ -71,7 +71,10 @@ namespace plpaRobot
         public static List<Cons> ConvertNestedConsToList(Cons o)
         {
             var list = new List<Cons>();
+
+            try {
             list.Add((Cons)o.car);
+            
             if(o.cdr != null)
             {
                foreach( Cons d in ConvertNestedConsToList((Cons)o.cdr))
@@ -81,6 +84,10 @@ namespace plpaRobot
             }
 
             return list;
+                } catch (Exception)
+            {
+                return list;
+            }
         }
 
         internal static string GetFloorPlan()
