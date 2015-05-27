@@ -166,7 +166,7 @@ namespace plpaRobot.Tests
                     "(turnLeft 1)\n" +
                     "(moveForward 6)\n" +
                     "(pickup)");
-            Assert.AreEqual("(\"pickup\" 1)\n", result);
+            Assert.AreEqual("((\"pickup\" 1))\n", result);
         }
 
         [Test]
@@ -204,7 +204,7 @@ namespace plpaRobot.Tests
                     "(moveForward 2)\n" +
                     "(turnLeft 1)\n" +
                     "(dropoff)");
-            Assert.AreEqual("(\"dropoff\" 1)\n", result);
+            Assert.AreEqual("((\"dropoff\" 1))\n", result);
         }
 
         [Test]
