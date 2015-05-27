@@ -1,4 +1,4 @@
-(define dirvalues '((up . 0) (right . 1) (down . 2) (left . 3) (penis . 4)))
+(define dirvalues '((up . 0) (right . 1) (down . 2) (left . 3) ))
 
 (define tilestatus '((empty . 0 ) (path . 1) (park . 2) (ws0 . 3) (ws1 . 4) (ws2 . 5) (ws3 . 6) (ws4 . 7)
                      (ws0drop . 8) (ws0pick . 9)(ws1drop . 10) (ws1pick . 11) (ws2drop . 12) (ws2pick . 13)
