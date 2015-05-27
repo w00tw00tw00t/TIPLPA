@@ -353,6 +353,15 @@
     <Content Include="SchemeFiles\robotactions.ss">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="SchemeFiles\floorplanFromAssignment.ss">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SchemeFiles\robotProgram.ss">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SchemeFiles\robotProgram2.ss">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\App.config" />
