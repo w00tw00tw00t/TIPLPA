@@ -1,21 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Linq;
 using Microsoft.Win32;
 using plpaRobot.Enumerables;
-using System.Text.RegularExpressions;
-using IronScheme;
-using IronScheme.Runtime;
-using System.Threading;
-using System.ComponentModel;
-using System.Timers;
-using System.Windows.Threading;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.IO;
-
 
 namespace plpaRobot
 {
@@ -24,6 +15,8 @@ namespace plpaRobot
     /// </summary>
     public partial class MainWindow
     {
+        private string FloorPlanFileName { get; set; }
+
         private readonly Robot _robot;
 
         public MainWindow()
@@ -35,24 +28,23 @@ namespace plpaRobot
             ProgramOutput.Text += "\n";
             ProgramOutput.TextChanged += (sender, e) =>
             {
-                ProgramOutput.ScrollToEnd();   
+                ProgramOutput.ScrollToEnd();
             };
 
             _robot = new Robot(ProgramOutput);
-
         }
 
-        private  void RunProgramClicked(object sender, RoutedEventArgs e)
+        private void RunProgramClicked(object sender, RoutedEventArgs e)
         {
             _robot.RobotColor = Brushes.Black;
             try
             {
                 _robot.Parser(Schemer.RunProgram(ProgramEditor.Text));
-             }
+            }
             catch (Exception df)
-           {
-                 ProgramOutput.AppendText("\r\n" +df.Message);
-             }
+            {
+                ProgramOutput.AppendText("\r\n" + df.Message);
+            }
         }
 
         private void Menu_Open(object sender, RoutedEventArgs e)
@@ -63,11 +55,10 @@ namespace plpaRobot
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer)
             };
 
-            if (openFileDialog.ShowDialog() != true) 
+            if (openFileDialog.ShowDialog() != true)
                 return;
 
             FloorPlanFileName = openFileDialog.FileName;
-
             LoadFloorPlan(openFileDialog.FileName);
         }
 
@@ -77,12 +68,11 @@ namespace plpaRobot
 
             string floorplan = Schemer.GetFloorPlan();
 
-            if (floorplan != null)
-            {
+            if (floorplan == null)
+                return;
 
-                int[,] floorplanvalues = ParseFloorplan(floorplan);
-                CreateFloorPlan(floorplanvalues);
-            }
+            int[,] floorplanvalues = ParseFloorplan(floorplan);
+            CreateFloorPlan(floorplanvalues);
         }
 
         private void Menu_Exit(object sender, RoutedEventArgs e)
@@ -119,13 +109,11 @@ namespace plpaRobot
                 {
                     var canvas = new Canvas();
 
-
-
                     TextBlock wstext = new TextBlock
                     {
                         FontSize = 10,
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                        VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
                     };
                     Panel.SetZIndex(wstext, 100);
                     Grid.SetColumn(wstext, l);
@@ -140,7 +128,7 @@ namespace plpaRobot
                             canvas.Background = Brushes.Red;
                             break;
                         case FloorTypeEnum.ws0:
-                            
+
                             canvas.Background = Brushes.Yellow;
                             wstext.Text = "0";
                             newFloorPlan.Children.Add(wstext);
@@ -236,7 +224,7 @@ namespace plpaRobot
 
             _robot.Grid = newFloorPlan;
             Grid.SetColumn(newFloorPlan, 0);
-            
+
             ContentGrid.Children.Add(newFloorPlan);
             _robot.Parser(Schemer.RunProgram("(initRobot 0 0)"));
         }
@@ -250,7 +238,7 @@ namespace plpaRobot
 
             int[,] floorplanvalues = new int[rows.Length, rows[0].Split(' ').Length];
 
-            for(int i = 0; i < rows.Length; i++)
+            for (int i = 0; i < rows.Length; i++)
             {
                 string[] rowsplit = rows[i].Split(' ');
                 for (int j = 0; j < rowsplit.Length; j++)
@@ -260,7 +248,6 @@ namespace plpaRobot
             }
 
             return floorplanvalues;
-           
         }
 
 
@@ -272,20 +259,16 @@ namespace plpaRobot
         private void ResetEnv(object sender, RoutedEventArgs e)
         {
             Schemer.resetEval();
-
-          
             InitializeScheme();
 
-
-            if(_robot.Grid != null)
-            _robot.Grid.Children.Clear();
+            if (_robot.Grid != null)
+                _robot.Grid.Children.Clear();
             _robot.RobotColor = Brushes.Black;
 
             if (FloorPlanFileName != null)
             {
                 LoadFloorPlan(FloorPlanFileName);
             }
-
         }
 
         private static void InitializeScheme()
@@ -317,9 +300,5 @@ namespace plpaRobot
         {
             _robot.Debug = !_robot.Debug;
         }
-
-
-
-        public string FloorPlanFileName { get; set; }
     }
 }

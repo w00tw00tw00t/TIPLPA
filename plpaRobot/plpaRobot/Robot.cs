@@ -1,17 +1,23 @@
-﻿using IronScheme.Runtime;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using IronScheme.Runtime;
 
 namespace plpaRobot
 {
 
     public class Robot
     {
+        public int Delay { get; set; }
+        public bool Debug { get; set; }
+        private bool Carrying { get; set; }
+        private int CarryingNext { get; set; }
+        public Brush RobotColor { get; set; }
+
         private int lineWidth = 25;
 
         private uint _x;
@@ -20,18 +26,17 @@ namespace plpaRobot
         private Direction _direction;
 
         public Grid Grid;
-        private TextBox ProgramOutput;
+        private readonly TextBox _programOutput;
 
-        public Robot(TextBox ProgramOutput)
+        public Robot(TextBox programOutput)
         {
-            this.ProgramOutput = ProgramOutput;
+            _programOutput = programOutput;
             Delay = 100;
             Debug = false;
             RobotColor = Brushes.Black;
-
         }
 
-        public enum Direction
+        private enum Direction
         {
             Up = 0,
             Right = 1,
@@ -39,7 +44,7 @@ namespace plpaRobot
             Left = 3
         }
 
-        public void SetRobot(uint x, uint y)
+        private void SetRobot(uint x, uint y)
         {
             if (Grid == null)
                 return;
@@ -92,9 +97,7 @@ namespace plpaRobot
             if(_direction != Direction.Up)
                 SetRobotDirection(_direction);
 
-
-            canvas.UpdateLayout();
-            
+            canvas.UpdateLayout(); 
         }
 
         private void SetRobotDirection(Direction direction)
@@ -106,8 +109,10 @@ namespace plpaRobot
             var oldRect = (Rectangle)GetCanvasFromCoordinates(_x, _y).Children.Cast<UIElement>().First(x => x is Rectangle);
             canvas.Children.Remove(oldRect);
 
-            var rect = new Rectangle();
-            rect.Fill = Brushes.White;
+            var rect = new Rectangle
+            {
+                Fill = Brushes.White
+            };
 
             if (direction == Direction.Up || direction == Direction.Down)
             {
@@ -141,32 +146,25 @@ namespace plpaRobot
             _direction = direction;
         }
 
-
-
         private Canvas GetCanvasFromCoordinates(uint row, uint column)
         {
             return Grid.Children.OfType<Border>().First(e => Grid.GetRow(e) == row && Grid.GetColumn(e) == column).Child as Canvas;
-
         }
 
-        internal  async void Parser(IronScheme.Runtime.Cons result)
+        internal  async void Parser(Cons result)
         {
             var list = result.ToList();
             foreach(Object o in list)
             {
-
                 if (o is Cons)
                 {
                     var listOfCommands = Schemer.ConvertNestedConsToList((Cons)o);
-
-
                     var list2 = ((Cons)o).ToList();
 
                     foreach (Object command in list2)
                     {
                         ParseOneCons(command);
                         await Task.Delay(Delay);
-
                     }
                 }
                 else
@@ -176,19 +174,15 @@ namespace plpaRobot
             }
         }
 
-
         private void ParseOneCons(Object x)
         {
-
             if (x is Cons)
             {
                 Cons d = (Cons)x;
-
-
                 string cmd = (String)d.car;
 
                 if(Debug)
-                ProgramOutput.Text += "Debug:" + d.PrettyPrint;
+                    _programOutput.Text += "Debug:" + d.PrettyPrint;
 
                 if (d.car is String)
                 {
@@ -207,25 +201,22 @@ namespace plpaRobot
                             DropOff((Int32)(((Cons)d.cdr).car));
                             break;
                         default:
-
-                            ProgramOutput.Text += "\n" + d.car;
+                            _programOutput.Text += "\n" + d.car;
                             break;
                     }
-
                 }
                 else
                 {
                     ParseIronToProgramOutput(d.car);
                 }
-
-            } else
-            ParseIronToProgramOutput(x);
-
+            } 
+            else
+                ParseIronToProgramOutput(x);
         }
 
         private void DropOff(int p)
         {
-            ProgramOutput.Text += "Dropped off: " + CarryingNext + " Pickup up: " + p + "\n";
+            _programOutput.Text += "Dropped off: " + CarryingNext + " Pickup up: " + p + "\n";
             Carrying = false;
             CarryingNext = p;
             RobotColor = Brushes.Black;
@@ -234,12 +225,11 @@ namespace plpaRobot
 
         private void PickUp(int p)
         {
-            ProgramOutput.Text += "Picked up: " + CarryingNext + " drop off at: " + p + "\n";
+            _programOutput.Text += "Picked up: " + CarryingNext + " drop off at: " + p + "\n";
             Carrying = true;
             CarryingNext = p;
             RobotColor = Brushes.Blue;
             SetRobot(_x, _y);
-
         }
 
         private void SetRobotDirection(Cons dir)
@@ -252,15 +242,15 @@ namespace plpaRobot
         {
             if (x is String)
             {
-                ProgramOutput.Text += "\n" + (String)x;
+                _programOutput.Text += "\n" + (String)x;
             }
             else if (x is int)
             {
-                ProgramOutput.Text += "\n" + (int)x;
+                _programOutput.Text += "\n" + (int)x;
             }
             else
             {
-                ProgramOutput.Text += "wtf: unhandled content : " + x.GetType().ToString() + "\n";
+                _programOutput.Text += "wtf: unhandled content : " + x.GetType() + "\n";
             }
         }
 
@@ -272,19 +262,8 @@ namespace plpaRobot
             }
             catch (Exception e)
             {
-                ProgramOutput.Text += "Moving robot error: " + e.Message + "\n";
+                _programOutput.Text += "Moving robot error: " + e.Message + "\n";
             }
         }
-
-
-         public int Delay { get; set; }
-
-         public bool Debug { get; set; }
-
-         public bool Carrying { get; set; }
-
-         public int CarryingNext { get; set; }
-
-         public Brush RobotColor { get; set; }
     }
 }
