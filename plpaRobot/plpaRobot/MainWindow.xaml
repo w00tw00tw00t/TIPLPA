@@ -16,7 +16,7 @@
                   Height="20">
                 <MenuItem Header="Files">
                     <MenuItem 
-                        Header="Open"
+                        Header="Open Floorplan"
                         Click="Menu_Open" />
                     <Separator />
                     <MenuItem Header="Load Robot program" Click="MenuItem_LoadRobot"/>
@@ -24,6 +24,16 @@
                     <MenuItem 
                         Header="Exit" 
                         Click="Menu_Exit">
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem 
+                        Header="Turbo" 
+                        Click="MenuItem_Turbo">
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem 
+                        Header="Debug" 
+                        Click="MenuItem_Debug">
                     </MenuItem>
                 </MenuItem>
             </Menu>

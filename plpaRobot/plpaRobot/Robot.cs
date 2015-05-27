@@ -160,7 +160,7 @@ namespace plpaRobot
                     foreach (Object command in list2)
                     {
                         ParseOneCons(command);
-                        await Task.Delay(100);
+                        await Task.Delay(Delay);
 
                     }
                 }
@@ -182,6 +182,7 @@ namespace plpaRobot
 
                 string cmd = (String)d.car;
 
+                if(Debug)
                 ProgramOutput.Text += "\nDebug:" + d.PrettyPrint;
 
                 if (d.car is String)
@@ -244,6 +245,10 @@ namespace plpaRobot
                 ProgramOutput.Text += "\n" + "Moving robot error: " + e.Message;
             }
         }
-            
+
+
+         public int Delay { get; set; }
+
+         public bool Debug { get; set; }
     }
 }

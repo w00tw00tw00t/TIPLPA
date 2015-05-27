@@ -323,6 +323,16 @@ namespace plpaRobot
             ProgramEditor.Text = File.ReadAllText(openFileDialog.FileName);
         }
 
+        private void MenuItem_Turbo(object sender, RoutedEventArgs e)
+        {
+            _robot.Delay = 30;
+        }
+
+        private void MenuItem_Debug(object sender, RoutedEventArgs e)
+        {
+            _robot.Debug = !_robot.Debug;
+        }
+
 
     }
 }
