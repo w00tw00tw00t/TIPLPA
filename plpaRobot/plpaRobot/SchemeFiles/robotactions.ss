@@ -51,7 +51,7 @@
         (begin
           (setVariable 'x x 0 '())
           (setVariable 'y y 0 '())
-          (list "pos" (getX) (getY)))
+          (list (list "pos" (getX) (getY))))
         (begin
           (if (= x (- (length (car floorplan)) 1))
               (begin
