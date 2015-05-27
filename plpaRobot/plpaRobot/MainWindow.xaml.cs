@@ -63,13 +63,20 @@ namespace plpaRobot
             if (openFileDialog.ShowDialog() != true) 
                 return;
 
-            Schemer.loadSchemeFile(openFileDialog.FileName);
+            FloorPlanFileName = openFileDialog.FileName;
+
+            LoadFloorPlan(openFileDialog.FileName);
+        }
+
+        private void LoadFloorPlan(String fileName)
+        {
+            Schemer.loadSchemeFile(fileName);
 
 
 
             string floorplan = Schemer.GetFloorPlan();
 
-            if(floorplan != null)
+            if (floorplan != null)
             {
 
                 int[,] floorplanvalues = ParseFloorplan(floorplan);
@@ -265,11 +272,18 @@ namespace plpaRobot
         {
             Schemer.resetEval();
 
+          
             InitializeScheme();
 
 
             if(_robot.Grid != null)
             _robot.Grid.Children.Clear();
+
+            if (FloorPlanFileName != null)
+            {
+                LoadFloorPlan(FloorPlanFileName);
+            }
+
         }
 
         private static void InitializeScheme()
@@ -303,5 +317,7 @@ namespace plpaRobot
         }
 
 
+
+        public string FloorPlanFileName { get; set; }
     }
 }
