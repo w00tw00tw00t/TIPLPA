@@ -51,12 +51,12 @@
         (begin
           (setVariable 'x x 0 '())
           (setVariable 'y y 0 '())
-          (list "pos" (getX) (getY)))
+          (list (getX) (getY)))
         (begin
           (if (= x (- (length (car floorplan)) 1))
               (begin
                 (if (= y (- (length floorplan) 1))
-                    "Error: No parking found for initializing robot"
+                    "No parking found for initializing robot"
                     (initRobot 0 (+ y 1))))
               (initRobot (+ x 1) y))))))
  
@@ -245,13 +245,13 @@
               ((= (getCarriesTo) 2) (set! ws 'ws2pick))
               ((= (getCarriesTo) 3) (set! ws 'ws3pick))
               ((= (getCarriesTo) 4) (set! ws 'ws4pick)))
-            (if (lookInDirection ws)
+            (if (adjacentspots ws)
                 (begin
                   (setVariable 'carriesTo (+ (getCarriesTo) 1) 0 '())
                   (setVariable 'carries 1 0 '())
-                  (list "pickup" (getCarriesTo))
-                "Error: Not correct pickup point")))
-        "Error: Allready carries package"))
+                  (getCarriesTo))
+                "Not correct pickup point")))
+        "Allready carries package"))
         
     ;look in adjacent spots for pickup
     ;check if pickup matches carriesto and carries is 0
@@ -272,15 +272,15 @@
               ((= (getCarriesTo) 2) (set! ws 'ws2drop))
               ((= (getCarriesTo) 3) (set! ws 'ws3drop))
               ((= (getCarriesTo) 4) (set! ws 'ws4drop)))
-            (if (lookInDirection ws)
+            (if (adjacentspots ws)
                 (begin
                   (if (= (getCarriesTo) 4)
                      (setVariable 'carriesTo 0 0 '())
                      (void))
                   (setVariable 'carries 0 0 '())
-                  (list "dropoff" (getCarriesTo))
-                "Error: Not correct dropoff point")))
-        "Error: Does not carry anything"))
+                  (getCarriesTo))
+                "Not correct dropoff point")))
+        "Does not carry anything"))
    ;look in adjacent spots for dropoff
    ;check if dropoff matches carriesto and carries is 1
       ;if matches drop of, set carries to 0
