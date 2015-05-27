@@ -24,6 +24,8 @@ namespace plpaRobot
         public Robot(TextBox ProgramOutput)
         {
             this.ProgramOutput = ProgramOutput;
+            Delay = 100;
+            Debug = true;
         }
 
         public enum Direction

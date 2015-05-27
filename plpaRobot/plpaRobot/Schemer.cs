@@ -101,5 +101,10 @@ namespace plpaRobot
             }
 
         }
+
+        internal static Cons RunProgram(string p)
+        {
+            return (Cons) Schemer.Eval("(runProgram \""+p+"\")");
+        }
     }
 }

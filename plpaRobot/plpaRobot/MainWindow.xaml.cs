@@ -44,7 +44,7 @@ namespace plpaRobot
         {
             try
             {
-                _robot.Parser((Cons)((Cons)Schemer.Eval("(runProgram \"" + ProgramEditor.Text + "\")")));
+                _robot.Parser(Schemer.RunProgram(ProgramEditor.Text));
              }
             catch (Exception df)
            {
@@ -230,9 +230,7 @@ namespace plpaRobot
             Grid.SetColumn(newFloorPlan, 0);
             
             ContentGrid.Children.Add(newFloorPlan);
-            var coords = ((Cons)Schemer.Eval("(initRobot 0 0)"));
-            var a = coords.cdr.GetType();
-            _robot.SetRobot((uint)((Int32)((Cons)coords.cdr).car),(uint)((Int32)coords.car));
+            _robot.Parser(Schemer.RunProgram("(initRobot 0 0)"));
         }
 
         private int[,] ParseFloorplan(string floorplanstring)
@@ -257,35 +255,6 @@ namespace plpaRobot
            
         }
 
-        // Test Data!!!!!!
-        private int[,] GetDummyData()
-        {
-            return new [,]
-            {
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                { 0, 0, 3, 3, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0},
-                { 0, 0, 3, 3, 1, 0, 0, 3, 3, 3, 1, 0, 0, 0, 0},
-                { 0, 0, 3, 3, 1, 0, 0, 3, 3, 3, 1, 0, 0, 0, 0},
-                { 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
-                { 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-                { 0, 2, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
-                { 0, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 3, 0, 0},
-                { 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 3, 3, 0, 0},
-                { 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 3, 3, 0, 0},
-                { 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0},
-                { 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0},
-                { 0, 0, 0, 0, 1, 0, 0, 3, 3, 3, 1, 0, 0, 0, 0},
-                { 0, 0, 0, 0, 1, 0, 0, 3, 3, 3, 1, 0, 0, 0, 0},
-                { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
-                { 0, 0, 3, 3, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
-                { 0, 0, 3, 3, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0},
-                { 0, 0, 3, 3, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-            };
-            
-        }
 
         private void ResetOutput(object sender, RoutedEventArgs e)
         {
