@@ -296,7 +296,7 @@
 
 (define evalFunctionInString
   (lambda expression
-     (eval (read (open-input-string (string-trim (car expression)))))))
+     (eval (read (open-input-string (string-trim (car expression)))) (interaction-environment))))
 
 
 (define (str-split str ch)
