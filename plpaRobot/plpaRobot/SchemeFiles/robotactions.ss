@@ -293,16 +293,10 @@
 (define runProgram
   (lambda (programString)
      (let ((functionList (str-split programString #\newline)))
-       (if (pair? functionList)
            (map evalFunctionInString functionList)
-           (void))
        )))
-    
-    
-
 (define evalFunctionInString
   (lambda expression
-     ;(read (open-input-string (string-trim (car expression))))))
      (eval (read (open-input-string (string-trim (car expression)))) (interaction-environment))))
 
 
