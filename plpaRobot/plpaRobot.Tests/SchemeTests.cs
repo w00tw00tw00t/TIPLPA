@@ -151,6 +151,13 @@ namespace plpaRobot.Tests
             Assert.AreEqual("((\"Error: up is not a valid move direction\"))\n", result);
         }
 
+        [Test]
+        public void AllowedMovement_NonTeleport()
+        {
+            var result = Schemer.RunProgram("(moveRight 5)").PrettyPrint;
+            Assert.AreEqual("(((\"pos\" 1 8) (\"pos\" 2 8) (\"pos\" 3 8) (\"pos\" 4 8) (\"pos\" 5 8)))\n", result);
+        }
+
         #endregion
 
         #region Workstations

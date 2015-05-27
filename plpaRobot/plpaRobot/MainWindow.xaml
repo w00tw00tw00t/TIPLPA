@@ -23,6 +23,11 @@
                         Click="MenuItem_LoadRobot" />
                     <Separator />
                     <MenuItem 
+                        Header="Exit" 
+                        Click="Menu_Exit" />
+                </MenuItem>
+                <MenuItem Header="Options">
+                    <MenuItem 
                         Header="Turbo" 
                         Click="MenuItem_Turbo"
                         IsCheckable="True" />
@@ -30,10 +35,6 @@
                         Header="Debug" 
                         Click="MenuItem_Debug"
                         IsCheckable="True" />
-                    <Separator />
-                    <MenuItem 
-                        Header="Exit" 
-                        Click="Menu_Exit" />
                 </MenuItem>
             </Menu>
         </DockPanel>
