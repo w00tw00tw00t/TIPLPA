@@ -32,6 +32,7 @@ namespace plpaRobot
 
             InitializeScheme();
 
+            ProgramOutput.Text += "\n";
             ProgramOutput.TextChanged += (sender, e) =>
             {
                 ProgramOutput.ScrollToEnd();   
@@ -43,6 +44,7 @@ namespace plpaRobot
 
         private  void RunProgramClicked(object sender, RoutedEventArgs e)
         {
+            _robot.RobotColor = Brushes.Black;
             try
             {
                 _robot.Parser(Schemer.RunProgram(ProgramEditor.Text));
@@ -277,6 +279,7 @@ namespace plpaRobot
 
             if(_robot.Grid != null)
             _robot.Grid.Children.Clear();
+            _robot.RobotColor = Brushes.Black;
 
             if (FloorPlanFileName != null)
             {
@@ -307,7 +310,7 @@ namespace plpaRobot
 
         private void MenuItem_Turbo(object sender, RoutedEventArgs e)
         {
-            _robot.Delay = 30;
+            _robot.Delay = _robot.Delay == 30 ? 100 : 30;
         }
 
         private void MenuItem_Debug(object sender, RoutedEventArgs e)

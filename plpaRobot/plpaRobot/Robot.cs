@@ -188,7 +188,7 @@ namespace plpaRobot
                 string cmd = (String)d.car;
 
                 if(Debug)
-                ProgramOutput.Text += "\nDebug:" + d.PrettyPrint;
+                ProgramOutput.Text += "Debug:" + d.PrettyPrint;
 
                 if (d.car is String)
                 {
@@ -225,7 +225,7 @@ namespace plpaRobot
 
         private void DropOff(int p)
         {
-            ProgramOutput.Text += "\nDropped off: " + CarryingNext + " Pickup up: " + p;
+            ProgramOutput.Text += "Dropped off: " + CarryingNext + " Pickup up: " + p + "\n";
             Carrying = false;
             CarryingNext = p;
             RobotColor = Brushes.Black;
@@ -234,10 +234,10 @@ namespace plpaRobot
 
         private void PickUp(int p)
         {
-            ProgramOutput.Text += "\nPicked up: " + CarryingNext + " drop off at: " + p;
+            ProgramOutput.Text += "Picked up: " + CarryingNext + " drop off at: " + p + "\n";
             Carrying = true;
             CarryingNext = p;
-            RobotColor = Brushes.Bisque;
+            RobotColor = Brushes.Blue;
             SetRobot(_x, _y);
 
         }
@@ -260,7 +260,7 @@ namespace plpaRobot
             }
             else
             {
-                ProgramOutput.Text += "\n" + "wtf: unhandled content : " + x.GetType().ToString() ;
+                ProgramOutput.Text += "wtf: unhandled content : " + x.GetType().ToString() + "\n";
             }
         }
 
@@ -272,7 +272,7 @@ namespace plpaRobot
             }
             catch (Exception e)
             {
-                ProgramOutput.Text += "\n" + "Moving robot error: " + e.Message;
+                ProgramOutput.Text += "Moving robot error: " + e.Message + "\n";
             }
         }
 

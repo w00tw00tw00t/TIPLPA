@@ -16,25 +16,24 @@
                   Height="20">
                 <MenuItem Header="Files">
                     <MenuItem 
-                        Header="Open Floorplan"
+                        Header="Load Floorplan"
                         Click="Menu_Open" />
-                    <Separator />
-                    <MenuItem Header="Load Robot program" Click="MenuItem_LoadRobot"/>
-                    <Separator />
                     <MenuItem 
-                        Header="Exit" 
-                        Click="Menu_Exit">
-                    </MenuItem>
+                        Header="Load Robot program" 
+                        Click="MenuItem_LoadRobot" />
                     <Separator />
                     <MenuItem 
                         Header="Turbo" 
-                        Click="MenuItem_Turbo">
-                    </MenuItem>
-                    <Separator />
+                        Click="MenuItem_Turbo"
+                        IsCheckable="True" />
                     <MenuItem 
                         Header="Debug" 
-                        Click="MenuItem_Debug">
-                    </MenuItem>
+                        Click="MenuItem_Debug"
+                        IsCheckable="True" />
+                    <Separator />
+                    <MenuItem 
+                        Header="Exit" 
+                        Click="Menu_Exit" />
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -60,6 +59,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="5" />
                     <RowDefinition Height="60" />
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
@@ -71,11 +71,16 @@
                 AcceptsReturn="True" 
                 IsReadOnly="False"
                 />
-
-                <TextBox x:Name="ProgramOutput" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"  Grid.ColumnSpan="3" TextWrapping="Wrap" IsReadOnly="True" Text="Program output.." Grid.Row="1"/>
-                <Button Click="RunProgramClicked" Grid.Row="2"  Grid.Column="0" Content="Run Program"/>
-                <Button Click="ResetOutput" Grid.Row="2" Grid.Column="1" Content="Reset Output"/>
-                <Button Click="ResetEnv" Grid.Row="2" Grid.Column="2" Content="Reset Env"/>
+                <GridSplitter
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Height="5"
+                    HorizontalAlignment="Stretch" />
+                <TextBox x:Name="ProgramOutput" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"  Grid.ColumnSpan="3" Grid.Column="0" TextWrapping="Wrap" IsReadOnly="True" Text="Program output.." Grid.Row="2"/>
+                <Button Click="RunProgramClicked" Grid.Row="3"  Grid.Column="0" Content="Run Program"/>
+                <Button Click="ResetOutput" Grid.Row="3" Grid.Column="1" Content="Reset Output"/>
+                <Button Click="ResetEnv" Grid.Row="3" Grid.Column="2" Content="Reset Env"/>
             </Grid>
 
         </Grid>
