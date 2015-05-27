@@ -9,6 +9,7 @@ using System.Windows.Shapes;
 
 namespace plpaRobot
 {
+
     public class Robot
     {
         private int lineWidth = 25;
@@ -25,7 +26,9 @@ namespace plpaRobot
         {
             this.ProgramOutput = ProgramOutput;
             Delay = 100;
-            Debug = true;
+            Debug = false;
+            RobotColor = Brushes.Black;
+
         }
 
         public enum Direction
@@ -48,7 +51,7 @@ namespace plpaRobot
 
             var ellipse = new Ellipse
             {
-                Fill = Brushes.Black,
+                Fill = RobotColor,
                 Width = canvas.ActualWidth,
                 Height = canvas.ActualHeight,
                 RenderTransformOrigin = new Point(0.5, 0.5)
@@ -197,6 +200,12 @@ namespace plpaRobot
                         case "dir":
                             SetRobotDirection((Cons)d.cdr);
                             break;
+                        case "pickup":
+                            PickUp((Int32)(((Cons)d.cdr).car));
+                            break;
+                        case "dropoff":
+                            DropOff((Int32)(((Cons)d.cdr).car));
+                            break;
                         default:
 
                             ProgramOutput.Text += "\n" + d.car;
@@ -211,6 +220,25 @@ namespace plpaRobot
 
             } else
             ParseIronToProgramOutput(x);
+
+        }
+
+        private void DropOff(int p)
+        {
+            ProgramOutput.Text += "\nDropped off: " + CarryingNext + " Pickup up: " + p;
+            Carrying = false;
+            CarryingNext = p;
+            RobotColor = Brushes.Black;
+            SetRobot(_x, _y);
+        }
+
+        private void PickUp(int p)
+        {
+            ProgramOutput.Text += "\nPicked up: " + CarryingNext + " drop off at: " + p;
+            Carrying = true;
+            CarryingNext = p;
+            RobotColor = Brushes.Bisque;
+            SetRobot(_x, _y);
 
         }
 
@@ -252,5 +280,11 @@ namespace plpaRobot
          public int Delay { get; set; }
 
          public bool Debug { get; set; }
+
+         public bool Carrying { get; set; }
+
+         public int CarryingNext { get; set; }
+
+         public Brush RobotColor { get; set; }
     }
 }

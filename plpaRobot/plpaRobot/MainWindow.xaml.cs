@@ -38,6 +38,7 @@ namespace plpaRobot
             };
 
             _robot = new Robot(ProgramOutput);
+
         }
 
         private  void RunProgramClicked(object sender, RoutedEventArgs e)
@@ -71,8 +72,6 @@ namespace plpaRobot
         private void LoadFloorPlan(String fileName)
         {
             Schemer.loadSchemeFile(fileName);
-
-
 
             string floorplan = Schemer.GetFloorPlan();
 
